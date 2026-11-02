@@ -6,12 +6,12 @@ import "testing"
 
 func TestSolveTSPGPU(t *testing.T) {
 	costs := [][]int64{{0, 10, 15, 20}, {10, 0, 35, 25}, {15, 35, 0, 30}, {20, 25, 30, 0}}
-	for run := 0; run < 10; run++ {
-		r := solveTSPGPU(len(costs), costs)
+	for start := range costs {
+		r := solveTSPGPU(len(costs), start, costs)
 		if r.BestCost != 80 || r.RoutesEvaluated != 6 || r.EdgesEvaluated != 24 {
 			t.Fatalf("resultado incorreto: %+v", r)
 		}
-		if len(r.BestRoute) != 5 || r.BestRoute[0] != 0 || r.BestRoute[4] != 0 {
+		if len(r.BestRoute) != 5 || r.BestRoute[0] != start || r.BestRoute[4] != start {
 			t.Fatalf("rota inválida: %v", r.BestRoute)
 		}
 		seen := make(map[int]bool)

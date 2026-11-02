@@ -5,20 +5,35 @@
 # (via the complementary !gpu tag on main.go) excludes the CPU main().
 
 NVCC      ?= nvcc
+AR        ?= ar
 ARCH      ?= sm_120          # RTX 5060 Ti (Blackwell)
+NVCCFLAGS ?= -O3 -Xcompiler -fPIC
 CGO_TAGS  := gpu
 
-BUILD := tsp-gpu
+GPU_BUILD := .build/gpu
+GPU_OBJECT := $(GPU_BUILD)/tsp_gpu.o
+GPU_LIBRARY := $(GPU_BUILD)/libtsp_gpu.a
+GPU_CONFIG := $(GPU_BUILD)/build-config
+BUILD := $(GPU_BUILD)/tsp-gpu
 
-.PHONY: all gpu gurun gurun-random run run-random grafico clean
+.PHONY: all gpu gurun gurun-random run run-random grafico clean FORCE libtsp_gpu.a
 
 all: gpu
 
-# Compile the CUDA kernel + C wrapper into a static archive. Link flags live in
-# the #cgo directive of main_gpu.go (which expands ${SRCDIR} correctly).
-libtsp_gpu.a: tsp_gpu.cu tsp_gpu.h
-	$(NVCC) -arch=$(ARCH) -O3 -Xcompiler -fPIC -c tsp_gpu.cu -o tsp_gpu.o
-	ar r "$@" tsp_gpu.o
+# Keep generated files out of the source tree and rebuild when compiler settings change.
+$(GPU_CONFIG): FORCE
+	@mkdir -p $(GPU_BUILD)
+	@printf '%s\n' '$(NVCC) -arch=$(ARCH) $(NVCCFLAGS)' > $@.tmp
+	@if cmp -s $@.tmp $@; then rm $@.tmp; else mv $@.tmp $@; fi
+
+$(GPU_OBJECT): tsp_gpu.cu tsp_gpu.h $(GPU_CONFIG)
+	$(NVCC) -arch=$(ARCH) $(NVCCFLAGS) -c tsp_gpu.cu -o $@
+
+$(GPU_LIBRARY): $(GPU_OBJECT)
+	$(AR) rcs $@ $<
+
+# Compatibility target used by all GPU build and run commands.
+libtsp_gpu.a: $(GPU_LIBRARY)
 
 gpu: libtsp_gpu.a
 	go build -tags $(CGO_TAGS) -o $(BUILD) .
@@ -44,4 +59,6 @@ grafico:
 	python3 grafico.py "resultados/$(RESULTADO)"
 
 clean:
-	rm -f tsp_gpu.o libtsp_gpu.a $(BUILD)
+	rm -rf $(GPU_BUILD)
+
+FORCE:

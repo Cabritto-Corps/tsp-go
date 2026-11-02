@@ -8,8 +8,9 @@
 //
 // Build/run with the "gpu" tag, e.g.:
 //
-//	make gpu          # build ./tsp-gpu
+//	make gpu          # build ./.build/gpu/tsp-gpu
 //	make gurun        # build and run
+//	make libtsp_gpu.a  # build the CUDA archive first
 //	go run -tags gpu .
 //
 // (main.go carries the complementary //go:build !gpu constraint, so the two
@@ -17,7 +18,7 @@
 package main
 
 /*
-#cgo gpu LDFLAGS: -L/opt/cuda/lib64 -lstdc++ -lcudart -L${SRCDIR} -ltsp_gpu
+#cgo gpu LDFLAGS: -L/opt/cuda/lib64 -lstdc++ -lcudart -L${SRCDIR}/.build/gpu -ltsp_gpu
 #include <stdint.h>
 #include "tsp_gpu.h"
 */
@@ -51,6 +52,7 @@ func main() {
 	maxN := flag.Int("max-n", 10, "maior quantidade de cidades do benchmark (máximo suportado: 18)")
 	seed := flag.Int64("seed", 42, "semente para gerar custos reproduzíveis")
 	outDir := flag.String("out", "resultados", "diretório dos arquivos de saída")
+	verbose := flag.Bool("verbose", false, "registra o custo de cada rota no arquivo de log")
 	randomStart := flag.Bool("random-start", false, "sorteia a cidade inicial para cada quantidade de cidades")
 	flag.Bool("unique-output", true, "mantido por compatibilidade; os arquivos sempre têm nomes únicos")
 	flag.Parse()
@@ -84,32 +86,28 @@ func main() {
 	logger.Printf("TSP por força bruta (GPU) | origem aleatória: %t | semente dos custos: %d", *randomStart, *seed)
 	logger.Printf("Resultados serão gravados em %s", *outDir)
 	logger.Print("As contagens representam a primeira passagem; uma segunda passagem reavalia as rotas para recuperar a rota ótima.")
+	if *verbose {
+		logger.Print("A listagem detalhada é reproduzida no CPU e não entra no tempo medido da GPU.")
+	}
 
 	// Same seeded matrix and top-left submatrix slicing as main.go so the
 	// GPU and CPU solve identical instances.
 	weights := randomMatrix(*maxN, *seed)
 	startRNG := rand.New(rand.NewSource(time.Now().UnixNano()))
 	for n := *minN; n <= *maxN; n++ {
-		cities := make([]int, n)
-		for i := range cities {
-			cities[i] = i
-		}
-		if *randomStart {
-			start := startRNG.Intn(n)
-			cities[0], cities[start] = cities[start], cities[0]
-		}
 		matrix := make([][]int64, n)
 		for i := range matrix {
-			matrix[i] = make([]int64, n)
-			for j := range matrix[i] {
-				matrix[i][j] = weights[cities[i]][cities[j]]
-			}
+			matrix[i] = weights[i][:n]
+		}
+		start := 0
+		if *randomStart {
+			start = startRNG.Intn(n)
+		}
+		if *verbose {
+			logRoutes(matrix, start, logger)
 		}
 
-		result := solveTSPGPU(n, matrix)
-		for i, city := range result.BestRoute {
-			result.BestRoute[i] = cities[city]
-		}
+		result := solveTSPGPU(n, start, matrix)
 		expected := factorial(uint64(n - 1))
 		logger.Printf("n=%d | rotas=%d (teórico=%d) | arestas=%d | custo mínimo=%d | rota=%s | tempo=%s",
 			result.N, result.RoutesEvaluated, expected, result.EdgesEvaluated,
@@ -136,7 +134,7 @@ func main() {
 }
 
 // solveTSPGPU runs the brute-force search on the GPU via the CGO entry point.
-func solveTSPGPU(n int, costs [][]int64) Result {
+func solveTSPGPU(n, start int, costs [][]int64) Result {
 	dim := n * n
 	host := make([]C.int32_t, dim)
 	for i := 0; i < n; i++ {
@@ -151,7 +149,7 @@ func solveTSPGPU(n int, costs [][]int64) Result {
 	var routes, edges C.uint64_t
 
 	started := time.Now()
-	if rc := C.tsp_gpu_run(C.int(n), (*C.int32_t)(hostPtr), &bestCost, (*C.int32_t)(unsafe.Pointer(&bestRoute[0])), &routes, &edges); rc != 0 {
+	if rc := C.tsp_gpu_run(C.int(n), C.int(start), (*C.int32_t)(hostPtr), &bestCost, (*C.int32_t)(unsafe.Pointer(&bestRoute[0])), &routes, &edges); rc != 0 {
 		log.Fatalf("gpu run falhou para n=%d (rc=%d)", n, int(rc))
 	}
 	duration := time.Since(started)
@@ -168,6 +166,38 @@ func solveTSPGPU(n int, costs [][]int64) Result {
 		EdgesEvaluated:  uint64(edges),
 		Duration:        duration,
 	}
+}
+
+func logRoutes(costs [][]int64, start int, logger *log.Logger) {
+	n := len(costs)
+	permutation := make([]int, 0, n-1)
+	for city := 0; city < n; city++ {
+		if city != start {
+			permutation = append(permutation, city)
+		}
+	}
+
+	var enumerate func(int)
+	enumerate = func(position int) {
+		if position == len(permutation) {
+			route := make([]int, 0, n+1)
+			route = append(route, start)
+			route = append(route, permutation...)
+			route = append(route, start)
+			var cost int64
+			for i := 0; i < n; i++ {
+				cost += costs[route[i]][route[i+1]]
+			}
+			logger.Printf("rota %s | custo=%d", formatRoute(route), cost)
+			return
+		}
+		for i := position; i < len(permutation); i++ {
+			permutation[position], permutation[i] = permutation[i], permutation[position]
+			enumerate(position + 1)
+			permutation[position], permutation[i] = permutation[i], permutation[position]
+		}
+	}
+	enumerate(0)
 }
 
 // randomMatrix builds a symmetric n x n matrix of positive weights (a complete

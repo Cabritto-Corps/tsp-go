@@ -4,19 +4,20 @@
 #include <limits.h>
 #include <stdint.h>
 
-__device__ int32_t route_cost(int n, const int32_t *costs, uint64_t t, unsigned long long *edges) {
+__device__ int32_t route_cost(int n, int start, const int32_t *costs, uint64_t t,
+                             unsigned long long *edges) {
     uint64_t fact[20];
     fact[0] = 1;
     for (int i = 1; i < n; i++) fact[i] = fact[i - 1] * (uint64_t)i;
     bool used[20] = {false};
-    int prev = 0;
+    int prev = start;
     int32_t cost = 0;
     for (int p = 0; p < n - 1; p++) {
         uint64_t f = fact[n - 2 - p];
         uint64_t digit = (t / f) % (uint64_t)(n - 1 - p);
-        int chosen = 0;
-        for (int city = 1; city < n; city++) {
-            if (!used[city]) {
+        int chosen = -1;
+        for (int city = 0; city < n; city++) {
+            if (city != start && !used[city]) {
                 if (digit == 0) { chosen = city; break; }
                 digit--;
             }
@@ -27,10 +28,10 @@ __device__ int32_t route_cost(int n, const int32_t *costs, uint64_t t, unsigned 
         prev = chosen;
     }
     if (edges) ++*edges;
-    return cost + costs[prev * n];
+    return cost + costs[prev * n + start];
 }
 
-__global__ void pass_min(int n, const int32_t *costs, uint64_t total,
+__global__ void pass_min(int n, int start, const int32_t *costs, uint64_t total,
                          int32_t *best, unsigned long long *routes,
                          unsigned long long *edges) {
     uint64_t stride = (uint64_t)gridDim.x * blockDim.x;
@@ -39,7 +40,7 @@ __global__ void pass_min(int n, const int32_t *costs, uint64_t total,
     int32_t local_best = INT32_MAX;
     for (uint64_t t = (uint64_t)blockIdx.x * blockDim.x + threadIdx.x;
          t < total; t += stride) {
-        int32_t cost = route_cost(n, costs, t, &edge_count);
+        int32_t cost = route_cost(n, start, costs, t, &edge_count);
         if (cost < local_best) local_best = cost;
         count++;
     }
@@ -50,19 +51,19 @@ __global__ void pass_min(int n, const int32_t *costs, uint64_t total,
     }
 }
 
-__global__ void pass_index(int n, const int32_t *costs, uint64_t total,
+__global__ void pass_index(int n, int start, const int32_t *costs, uint64_t total,
                            const int32_t *best, unsigned long long *best_index) {
     uint64_t stride = (uint64_t)gridDim.x * blockDim.x;
     for (uint64_t t = (uint64_t)blockIdx.x * blockDim.x + threadIdx.x;
          t < total; t += stride) {
-        if (route_cost(n, costs, t, nullptr) == *best)
+        if (route_cost(n, start, costs, t, nullptr) == *best)
             atomicMin(best_index, (unsigned long long)t);
     }
 }
 
-extern "C" int tsp_gpu_run(int n, const int32_t *host, int32_t *best_out,
+extern "C" int tsp_gpu_run(int n, int start, const int32_t *host, int32_t *best_out,
                            int32_t *route, uint64_t *routes_out, uint64_t *edges_out) {
-    if (n < 1 || n > 18) return 1;
+    if (n < 1 || n > 18 || start < 0 || start >= n) return 1;
     uint64_t total = 1;
     for (int i = 1; i < n; i++) total *= (uint64_t)i;
     int32_t *costs = nullptr, *best = nullptr;
@@ -82,9 +83,9 @@ extern "C" int tsp_gpu_run(int n, const int32_t *host, int32_t *best_out,
     if (!check(cudaMemcpy(routes, &zero, sizeof(zero), cudaMemcpyHostToDevice))) return 1;
     if (!check(cudaMemcpy(edges, &zero, sizeof(zero), cudaMemcpyHostToDevice))) return 1;
     int grid = (int)((total + 255) / 256 < 2048 ? (total + 255) / 256 : 2048);
-    pass_min<<<grid, 256>>>(n, costs, total, best, routes, edges);
+    pass_min<<<grid, 256>>>(n, start, costs, total, best, routes, edges);
     if (!check(cudaGetLastError())) return 1;
-    pass_index<<<grid, 256>>>(n, costs, total, best, index);
+    pass_index<<<grid, 256>>>(n, start, costs, total, best, index);
     if (!check(cudaGetLastError())) return 1;
     if (!check(cudaMemcpy(best_out, best, sizeof(*best_out), cudaMemcpyDeviceToHost))) return 1;
     if (!check(cudaMemcpy(&host_index, index, sizeof(host_index), cudaMemcpyDeviceToHost))) return 1;
@@ -97,11 +98,11 @@ extern "C" int tsp_gpu_run(int n, const int32_t *host, int32_t *best_out,
     uint64_t fact[20]; fact[0] = 1;
     for (int i = 1; i < n; i++) fact[i] = fact[i - 1] * (uint64_t)i;
     bool used[20] = {false};
-    route[0] = route[n] = 0;
+    route[0] = route[n] = start;
     for (int p = 0; p < n - 1; p++) {
         uint64_t digit = (host_index / fact[n - 2 - p]) % (uint64_t)(n - 1 - p);
-        for (int city = 1; city < n; city++) {
-            if (!used[city]) {
+        for (int city = 0; city < n; city++) {
+            if (city != start && !used[city]) {
                 if (digit == 0) { route[p + 1] = city; used[city] = true; break; }
                 digit--;
             }

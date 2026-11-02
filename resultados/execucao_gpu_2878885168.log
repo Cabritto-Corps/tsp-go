@@ -1,0 +1,18 @@
+2026/11/02 19:58:32 TSP por força bruta (GPU) | origem aleatória: false | semente dos custos: 42
+2026/11/02 19:58:32 Resultados serão gravados em resultados
+2026/11/02 19:58:32 As contagens representam a primeira passagem; uma segunda passagem reavalia as rotas para recuperar a rota ótima.
+2026/11/02 19:58:32 n=3 | rotas=2 (teórico=2) | arestas=6 | custo mínimo=148 | rota=1 -> 2 -> 3 -> 1 | tempo=142.841025ms
+2026/11/02 19:58:32 n=4 | rotas=6 (teórico=6) | arestas=24 | custo mínimo=209 | rota=1 -> 2 -> 3 -> 4 -> 1 | tempo=357.791µs
+2026/11/02 19:58:32 n=5 | rotas=24 (teórico=24) | arestas=120 | custo mínimo=201 | rota=1 -> 2 -> 5 -> 4 -> 3 -> 1 | tempo=1.408151ms
+2026/11/02 19:58:32 n=6 | rotas=120 (teórico=120) | arestas=720 | custo mínimo=140 | rota=1 -> 2 -> 5 -> 4 -> 3 -> 6 -> 1 | tempo=635.886µs
+2026/11/02 19:58:32 n=7 | rotas=720 (teórico=720) | arestas=5040 | custo mínimo=113 | rota=1 -> 2 -> 5 -> 4 -> 7 -> 3 -> 6 -> 1 | tempo=302.767µs
+2026/11/02 19:58:32 n=8 | rotas=5040 (teórico=5040) | arestas=40320 | custo mínimo=94 | rota=1 -> 2 -> 5 -> 4 -> 8 -> 7 -> 3 -> 6 -> 1 | tempo=503.65µs
+2026/11/02 19:58:32 n=9 | rotas=40320 (teórico=40320) | arestas=362880 | custo mínimo=91 | rota=1 -> 2 -> 7 -> 9 -> 5 -> 4 -> 8 -> 3 -> 6 -> 1 | tempo=355.9µs
+2026/11/02 19:58:32 n=10 | rotas=362880 (teórico=362880) | arestas=3628800 | custo mínimo=113 | rota=1 -> 2 -> 7 -> 9 -> 5 -> 4 -> 8 -> 3 -> 6 -> 10 -> 1 | tempo=575.293µs
+2026/11/02 19:58:32 n=11 | rotas=3628800 (teórico=3628800) | arestas=39916800 | custo mínimo=103 | rota=1 -> 2 -> 5 -> 9 -> 7 -> 11 -> 10 -> 4 -> 8 -> 3 -> 6 -> 1 | tempo=2.853125ms
+2026/11/02 19:58:32 n=12 | rotas=39916800 (teórico=39916800) | arestas=479001600 | custo mínimo=113 | rota=1 -> 2 -> 5 -> 9 -> 7 -> 11 -> 10 -> 6 -> 3 -> 8 -> 4 -> 12 -> 1 | tempo=24.476475ms
+2026/11/02 19:58:32 n=13 | rotas=479001600 (teórico=479001600) | arestas=6227020800 | custo mínimo=145 | rota=1 -> 2 -> 7 -> 13 -> 10 -> 11 -> 9 -> 5 -> 12 -> 4 -> 8 -> 3 -> 6 -> 1 | tempo=311.104639ms
+2026/11/02 19:58:37 n=14 | rotas=6227020800 (teórico=6227020800) | arestas=87178291200 | custo mínimo=145 | rota=1 -> 2 -> 14 -> 11 -> 10 -> 13 -> 7 -> 9 -> 5 -> 12 -> 4 -> 8 -> 3 -> 6 -> 1 | tempo=4.89025853s
+2026/11/02 20:00:10 n=15 | rotas=87178291200 (teórico=87178291200) | arestas=1307674368000 | custo mínimo=171 | rota=1 -> 2 -> 14 -> 11 -> 10 -> 13 -> 9 -> 5 -> 12 -> 4 -> 15 -> 7 -> 8 -> 3 -> 6 -> 1 | tempo=1m33.118212972s
+2026/11/02 20:26:13 n=16 | rotas=1307674368000 (teórico=1307674368000) | arestas=20922789888000 | custo mínimo=185 | rota=1 -> 6 -> 3 -> 8 -> 4 -> 15 -> 7 -> 13 -> 10 -> 11 -> 9 -> 5 -> 12 -> 16 -> 2 -> 14 -> 1 | tempo=26m3.253068073s
+2026/11/02 20:26:13 Benchmark (GPU) concluído. Arquivos: resultados/execucao_gpu_2878885168.log e resultados/results_gpu_2372117759.csv
