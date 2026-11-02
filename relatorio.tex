@@ -1,0 +1,196 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{hyperref}
+\geometry{margin=2.5cm}
+\hypersetup{hidelinks}
+
+% Substitua os campos entre colchetes e insira as figuras indicadas.
+% Compile com pdflatex relatorio.tex, preferencialmente duas vezes.
+\newcommand{\pendente}[1]{\textbf{[PREENCHER: #1]}}
+
+\begin{document}
+
+\begin{titlepage}
+\begin{center}
+    \textbf{UNIVERSIDADE DE VILA VELHA}\\[0.3cm]
+    \textbf{PROJETO E ANÁLISE DE ALGORITMOS}\\[4cm]
+    {\Large\bfseries Explorando a intratabilidade e a força bruta no Problema do Caixeiro Viajante\par}
+    \vspace{3cm}
+    Bernardo Ziviani Gasparino\\
+    Samuel Bruno da Silva\\
+    Yuri Luiz Kruger Torquato\\[0.5cm]
+    Professor: Wanderson Muniz de Santana\\[0.5cm]
+    Turma: CC7N
+    \vfill
+    Vila Velha - ES\\
+    2026
+\end{center}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Introdução}
+
+O Problema do Caixeiro Viajante, conhecido pela sigla TSP, consiste em encontrar um circuito de custo mínimo que visite cada cidade uma única vez e retorne à cidade de origem. Embora sua definição seja simples, a quantidade de rotas candidatas cresce rapidamente com o número de cidades. Este trabalho investiga esse crescimento por meio de uma implementação de força bruta, relacionando as medições experimentais à análise apresentada no material da disciplina \cite{material} e aos objetivos da proposta de atividade \cite{proposta}.
+
+O objetivo é implementar a busca exaustiva, registrar as quantidades de rotas e avaliações de arestas, medir o tempo para diferentes tamanhos de entrada e comparar os resultados com uma curva proporcional a $n!$.
+
+\section{Fundamentação teórica}
+
+\subsection{Modelagem e força bruta}
+
+O conjunto de cidades é representado por $V=\{v_1,v_2,\ldots,v_n\}$, e o custo de deslocamento entre duas cidades é dado por $d(v_i,v_j)$. Na implementação, os custos são armazenados em uma matriz. Para cada rota candidata, o programa soma os custos das arestas percorridas e mantém a rota de menor custo encontrada.
+
+Para evitar contar diferentes rotações do mesmo circuito, fixa-se $v_1$ como origem na execução principal. Restam, portanto, $n-1$ cidades a serem permutadas, resultando em
+\begin{equation}
+ R(n)=(n-1)!
+\end{equation}
+rotas. Cada rota possui $n$ arestas, incluindo o retorno à origem. O número total de avaliações dessas arestas é
+\begin{equation}
+ A(n)=n\cdot(n-1)!=n!.
+\end{equation}
+Assim, para a implementação sequencial com avaliação linear por rota, o tempo de execução é $\Theta(n!)$ \cite{material}. A igualdade acima representa o número de avaliações de arestas, não a quantidade total de instruções executadas pelo programa.
+
+Como a matriz gerada neste projeto é simétrica, uma rota e sua inversa têm o mesmo custo. Mesmo assim, ambas são avaliadas separadamente, preservando a contagem $(n-1)!$ utilizada no material. Para $n=6$, por exemplo, são $5!=120$ rotas e $6\cdot120=720$ avaliações de arestas.
+
+\subsection{Fixação da origem e redução do espaço de busca}
+
+Sem fixar a origem, a enumeração de todas as permutações das $n$ cidades produziria $n!$ representações. Ao fixá-la, o total é reduzido para $(n-1)!$. Como $n!=n\cdot(n-1)!$, a redução é por um fator igual a $n$. As diferentes escolhas de origem correspondem a rotações de um mesmo circuito e não alteram seu custo ótimo.
+
+O projeto também possui um modo de origem aleatória, que mantém a cidade sorteada fixa durante cada busca. Esse modo é complementar; para seguir literalmente a proposta, os resultados principais devem ser obtidos com origem fixa em $v_1$.
+
+\section{Implementação}
+
+\subsection{Algoritmo sequencial}
+
+A implementação em Go gera uma matriz simétrica de custos positivos a partir de uma semente e enumera recursivamente as permutações das cidades restantes. Para cada permutação, constrói o circuito, avalia suas $n$ arestas e atualiza a melhor solução quando encontra um custo inferior. O programa registra a rota ótima, o custo, as contagens e o tempo de busca em arquivos CSV e de log com nomes únicos. O código-fonte está disponível no repositório do projeto \cite{repositorio}.
+
+\section{Metodologia experimental}
+
+\subsection{Ambiente e configuração}
+
+Os experimentos devem identificar o ambiente e os parâmetros utilizados:
+\begin{itemize}
+    \item Processador e memória: \pendente{modelo e capacidade};
+    \item Sistema operacional e versão do Go: \pendente{informações};
+    \item Intervalo de cidades: \pendente{valores mínimo e máximo};
+    \item Semente da matriz: \pendente{valor utilizado};
+    \item Repetições por tamanho e tratamento das amostras: \pendente{informar procedimento}.
+\end{itemize}
+
+O tempo registrado compreende a enumeração, a montagem e a avaliação das rotas, incluindo a instrumentação. A geração da matriz e a escrita do CSV não fazem parte desse intervalo. O registro detalhado de todas as rotas não deve ser ativado nos testes de desempenho, pois a escrita no log pode afetar os tempos.
+
+Cada execução do programa produz uma amostra por valor de $n$. Recomenda-se repetir as execuções e apresentar uma medida como a mediana, indicando o número de repetições. Os resultados e suas condições devem ser registrados sem substituir medições ausentes por estimativas.
+
+\subsection{Comandos utilizados}
+
+Para a execução principal com origem fixa, por exemplo:
+\begin{verbatim}
+make run ARGS="-min-n 3 -max-n 10"
+\end{verbatim}
+Para gerar o gráfico e a tabela a partir do CSV obtido:
+\begin{verbatim}
+make grafico RESULTADO="nome_do_arquivo.csv"
+\end{verbatim}
+O CSV é lido em \texttt{resultados/}, e o gráfico PNG e a tabela são gerados em \texttt{grafricos/}. Os nomes dos arquivos são únicos.
+
+\section{Resultados e validação}
+
+\subsection{Tabela de crescimento combinatório}
+
+A Tabela~\ref{tab:resultados} deve ser preenchida com os dados efetivamente obtidos. A coluna $n!$ representa o número teórico de avaliações de arestas, enquanto as colunas de rotas e arestas medidas são extraídas do CSV. Acrescente ou remova linhas conforme o intervalo experimental.
+
+\begin{longtable}{rrrrr}
+\caption{Crescimento fatorial e resultados experimentais.}\label{tab:resultados}\\
+\toprule
+$n$ & $(n-1)!$ & $n!$ & Arestas medidas & Tempo (ms) \\
+\midrule
+\endfirsthead
+\toprule
+$n$ & $(n-1)!$ & $n!$ & Arestas medidas & Tempo (ms) \\
+\midrule
+\endhead
+3 & 2 & 6 & \pendente{valor} & \pendente{valor} \\
+4 & 6 & 24 & \pendente{valor} & \pendente{valor} \\
+5 & 24 & 120 & \pendente{valor} & \pendente{valor} \\
+6 & 120 & 720 & \pendente{valor} & \pendente{valor} \\
+\bottomrule
+\end{longtable}
+
+\noindent\pendente{Adicionar as demais linhas até o maior valor de n testado e comparar também as rotas medidas com $(n-1)!$.}
+
+\subsection{Curva teórica e dados empíricos}
+
+O gráfico sobrepõe o tempo observado à função $f(n)=c\cdot n!$. A constante $c$ é ajustada pelo método dos mínimos quadrados aos tempos em milissegundos, considerando uma reta que passa pela origem. Para os pares $(x_i,y_i)=(n_i!,t_i)$, o valor utilizado é
+\begin{equation}
+ c=\frac{\sum_i x_i y_i}{\sum_i x_i^2}.
+\end{equation}
+O ajuste é realizado sobre os tempos em escala linear; consequentemente, as maiores medições têm maior influência. O gráfico utiliza escala logarítmica no eixo vertical apenas para facilitar a visualização de valores de ordens de grandeza diferentes. A proximidade entre as curvas ajuda na comparação, mas não constitui, isoladamente, uma prova da complexidade assintótica.
+
+\begin{figure}[H]
+    \centering
+    % Substitua pelo caminho do gráfico PNG escolhido e remova o comentário:
+    % \includegraphics[width=\linewidth]{grafricos/nome_do_grafico.png}
+    \fbox{\parbox[c][5cm][c]{0.8\linewidth}{\centering Espaço para o gráfico de tempo medido e $c\cdot n!$}}
+    \caption{Comparação entre o tempo medido e a curva fatorial calibrada.}
+    \label{fig:grafico}
+\end{figure}
+
+\noindent\pendente{Informar o arquivo de dados, o valor de c, o intervalo testado e interpretar as diferenças observadas entre as curvas.}
+
+\subsection{Evidências de execução}
+
+\begin{figure}[H]
+    \centering
+    % Exemplo: \includegraphics[width=\linewidth]{caminho/print.png}
+    \fbox{\parbox[c][4cm][c]{0.8\linewidth}{\centering Espaço para captura da execução ou dos resultados}}
+    \caption{Evidência da execução do programa.}
+\end{figure}
+
+\noindent\pendente{Inserir capturas relevantes e descrever o que cada uma comprova.}
+
+\section{Discussão das questões investigativas}
+
+\subsection{Redução do espaço de busca}
+
+A fixação de $v_1$ reduz a enumeração de $n!$ para $(n-1)!$ representações, um fator de redução igual a $n$. Essa economia deve ser verificada comparando a coluna de rotas avaliadas do CSV com $(n-1)!$ para cada entrada. \pendente{Apresentar um exemplo com os dados da execução.}
+
+\subsection{Custo de avaliação por rota}
+
+A avaliação percorre as $n$ arestas do circuito, inclusive a aresta de retorno. Dessa forma, o trabalho de avaliação de uma rota é $\Theta(n)$ e as avaliações de arestas nas $(n-1)!$ rotas somam $n!$. \pendente{Comparar a contagem registrada com a teoria para pelo menos um valor de n.}
+
+\subsection{Limiar prático da intratabilidade}
+
+O ponto em que a execução passa a levar minutos ou horas depende do hardware, da implementação e das condições de teste. \pendente{Informar o primeiro n observado com tempo em minutos ou horas, a duração, o arquivo de origem e o ambiente. Se o limiar não tiver sido atingido, declarar isso.}
+
+O Merge Sort é um exemplo de algoritmo com complexidade $\Theta(n\log n)$, enquanto a busca exaustiva sequencial aqui estudada tem crescimento fatorial. A recorrência $T(n)=2T(n-1)+c$ discutida na seção 4.2 do material é um exemplo distinto de crescimento $\Theta(2^n)$; ela não é a recorrência usada para deduzir o custo deste TSP. A comparação evidencia que fatores polinomiais, exponenciais e fatoriais produzem comportamentos muito diferentes conforme a entrada aumenta.
+
+\subsection{Classes P e NP e heurísticas}
+
+A classe P reúne problemas de decisão solucionáveis em tempo polinomial; NP inclui problemas de decisão cujas soluções propostas podem ser verificadas em tempo polinomial. A versão de decisão do TSP é NP-completa, enquanto sua versão de otimização é NP-difícil. Não se conhece um algoritmo polinomial exato geral para o problema, mas isso não prova que tal algoritmo não exista: a questão $P=NP$ permanece em aberto.
+
+Uma heurística gulosa pode escolher, em cada passo, uma cidade que pareça vantajosa localmente. Essa escolha não garante a melhor combinação global e, portanto, não assegura o custo mínimo para todas as instâncias. Heurísticas e metaheurísticas podem produzir soluções úteis em tempo menor, mas sua qualidade e suas garantias dependem do método empregado.
+
+\section{Conclusão}
+
+O estudo relacionou a enumeração de $(n-1)!$ rotas e a avaliação de $n$ arestas por rota à complexidade $\Theta(n!)$ da abordagem sequencial de força bruta. A fixação da origem elimina representações redundantes por rotação, mas não impede o crescimento fatorial.
+
+\pendente{Sintetizar os resultados realmente obtidos, o maior n concluído, as limitações das medições e as conclusões extraídas do gráfico.}
+
+\begin{thebibliography}{9}
+\bibitem{material} UNIVERSIDADE DE VILA VELHA. \textit{Projeto e Análise de Algoritmos: Unidade 4}. Material da disciplina, seções 4.1 e 4.2.
+\bibitem{proposta} \textit{Proposta de Atividade Investigativa: Explorando a Intratabilidade e a Força Bruta no Problema do Caixeiro Viajante (TSP)}. Documento fornecido para a atividade.
+\bibitem{repositorio} CABRITTO CORPS. \textit{tsp-go: implementação do Problema do Caixeiro Viajante}. Repositório de código-fonte. Disponível em: \url{https://github.com/Cabritto-Corps/tsp-go}.
+\end{thebibliography}
+
+\end{document}

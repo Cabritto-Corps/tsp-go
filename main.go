@@ -14,7 +14,6 @@ import (
 	"math"
 	"math/rand"
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -35,6 +34,8 @@ func main() {
 	seed := flag.Int64("seed", 42, "semente para gerar custos reproduzíveis")
 	outDir := flag.String("out", "resultados", "diretório dos arquivos de saída")
 	verbose := flag.Bool("verbose", false, "registra o custo de cada rota no arquivo de log")
+	randomStart := flag.Bool("random-start", false, "sorteia a cidade inicial para cada quantidade de cidades")
+	flag.Bool("unique-output", true, "mantido por compatibilidade; os arquivos sempre têm nomes únicos")
 	flag.Parse()
 
 	if *minN < 1 || *maxN < *minN || *maxN > 18 {
@@ -44,26 +45,29 @@ func main() {
 		log.Fatalf("não foi possível criar %q: %v", *outDir, err)
 	}
 
-	logFile, err := os.Create(filepath.Join(*outDir, "execucao.log"))
+	logFile, err := os.CreateTemp(*outDir, "execucao_*.log")
 	if err != nil {
 		log.Fatalf("não foi possível criar o log: %v", err)
 	}
 	defer logFile.Close()
+	logPath := logFile.Name()
 	logger := log.New(io.MultiWriter(os.Stdout, logFile), "", log.LstdFlags)
 
-	csvFile, err := os.Create(filepath.Join(*outDir, "resultados.csv"))
+	csvFile, err := os.CreateTemp(*outDir, "resultados_*.csv")
 	if err != nil {
 		log.Fatalf("não foi possível criar o CSV: %v", err)
 	}
 	defer csvFile.Close()
+	csvPath := csvFile.Name()
 	csvWriter := csv.NewWriter(csvFile)
 	if err := csvWriter.Write([]string{"cidades", "rotas_teoricas", "rotas_avaliadas", "arestas_avaliadas", "custo_minimo", "rota_otima", "tempo_ns", "tempo_ms"}); err != nil {
 		log.Fatalf("erro ao escrever cabeçalho CSV: %v", err)
 	}
 
-	logger.Printf("TSP por força bruta | origem fixa: cidade 1 | semente: %d", *seed)
+	logger.Printf("TSP por força bruta | origem aleatória: %t | semente dos custos: %d", *randomStart, *seed)
 	logger.Printf("Resultados serão gravados em %s", *outDir)
 	weights := randomMatrix(*maxN, *seed)
+	startRNG := rand.New(rand.NewSource(time.Now().UnixNano()))
 	for n := *minN; n <= *maxN; n++ {
 		matrix := make([][]int64, n)
 		for i := range matrix {
@@ -76,7 +80,11 @@ func main() {
 			}
 		}
 
-		result, err := solveTSP(matrix, routeLogger)
+		start := 0
+		if *randomStart {
+			start = startRNG.Intn(n)
+		}
+		result, err := solveTSPFrom(matrix, start, routeLogger)
 		if err != nil {
 			log.Fatalf("erro ao resolver para n=%d: %v", n, err)
 		}
@@ -102,14 +110,21 @@ func main() {
 			log.Fatalf("erro ao salvar resultado CSV: %v", err)
 		}
 	}
-	logger.Printf("Benchmark concluído. Arquivos: %s e %s", filepath.Join(*outDir, "execucao.log"), filepath.Join(*outDir, "resultados.csv"))
+	logger.Printf("Benchmark concluído. Arquivos: %s e %s", logPath, csvPath)
 }
 
 // solveTSP enumera todas as permutações das cidades 1..n-1, mantendo a cidade 0 fixa.
 func solveTSP(costs [][]int64, onRoute func([]int, int64)) (Result, error) {
+	return solveTSPFrom(costs, 0, onRoute)
+}
+
+func solveTSPFrom(costs [][]int64, start int, onRoute func([]int, int64)) (Result, error) {
 	n := len(costs)
 	if n == 0 {
 		return Result{}, fmt.Errorf("a matriz de custos não pode ser vazia")
+	}
+	if start < 0 || start >= n {
+		return Result{}, fmt.Errorf("cidade inicial inválida: %d", start)
 	}
 	for i := range costs {
 		if len(costs[i]) != n {
@@ -117,9 +132,11 @@ func solveTSP(costs [][]int64, onRoute func([]int, int64)) (Result, error) {
 		}
 	}
 
-	permutation := make([]int, n-1)
-	for i := range permutation {
-		permutation[i] = i + 1
+	permutation := make([]int, 0, n-1)
+	for city := 0; city < n; city++ {
+		if city != start {
+			permutation = append(permutation, city)
+		}
 	}
 	result := Result{N: n, BestCost: math.MaxInt64}
 	started := time.Now()
@@ -129,15 +146,15 @@ func solveTSP(costs [][]int64, onRoute func([]int, int64)) (Result, error) {
 		if position == len(permutation) {
 			// Percorre a rota v1 -> ... -> v1: exatamente n arestas.
 			route := make([]int, 0, n+1)
-			route = append(route, 0)
+			route = append(route, start)
 			route = append(route, permutation...)
-			route = append(route, 0)
+			route = append(route, start)
 			var routeCost int64
 			for i := 0; i < n; i++ {
 				routeCost += costs[route[i]][route[i+1]]
+				result.EdgesEvaluated++
 			}
 			result.RoutesEvaluated++
-			result.EdgesEvaluated += uint64(n)
 			if routeCost < result.BestCost {
 				result.BestCost = routeCost
 				result.BestRoute = append([]int(nil), route...)

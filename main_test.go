@@ -1,3 +1,5 @@
+//go:build !gpu
+
 package main
 
 import "testing"
@@ -30,5 +32,21 @@ func TestSolveTSP(t *testing.T) {
 func TestSolveTSPRejectsNonSquareMatrix(t *testing.T) {
 	if _, err := solveTSP([][]int64{{0, 1}, {1}}, nil); err == nil {
 		t.Fatal("esperava erro para matriz não quadrada")
+	}
+}
+
+func TestSolveTSPFrom(t *testing.T) {
+	costs := [][]int64{{0, 10, 15}, {10, 0, 20}, {15, 20, 0}}
+	for start := range costs {
+		result, err := solveTSPFrom(costs, start, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if result.BestRoute[0] != start || result.BestRoute[len(result.BestRoute)-1] != start || result.BestCost != 45 || result.RoutesEvaluated != 2 {
+			t.Errorf("origem %d: resultado inesperado: %+v", start, result)
+		}
+	}
+	if _, err := solveTSPFrom(costs, 3, nil); err == nil {
+		t.Error("esperava erro para origem inválida")
 	}
 }

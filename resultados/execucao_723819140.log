@@ -1,0 +1,14 @@
+2026/11/02 11:54:54 TSP por força bruta | origem aleatória: false | semente dos custos: 42
+2026/11/02 11:54:54 Resultados serão gravados em resultados
+2026/11/02 11:54:54 n=3 | rotas=2 (teórico=2) | arestas=6 | custo mínimo=147 | rota=1 -> 2 -> 3 -> 1 | tempo=902ns
+2026/11/02 11:54:54 n=4 | rotas=6 (teórico=6) | arestas=24 | custo mínimo=148 | rota=1 -> 2 -> 3 -> 4 -> 1 | tempo=582ns
+2026/11/02 11:54:54 n=5 | rotas=24 (teórico=24) | arestas=120 | custo mínimo=138 | rota=1 -> 2 -> 3 -> 4 -> 5 -> 1 | tempo=1.042µs
+2026/11/02 11:54:54 n=6 | rotas=120 (teórico=120) | arestas=720 | custo mínimo=123 | rota=1 -> 2 -> 6 -> 4 -> 3 -> 5 -> 1 | tempo=5.099µs
+2026/11/02 11:54:54 n=7 | rotas=720 (teórico=720) | arestas=5040 | custo mínimo=162 | rota=1 -> 2 -> 3 -> 5 -> 4 -> 6 -> 7 -> 1 | tempo=27.983µs
+2026/11/02 11:54:54 n=8 | rotas=5040 (teórico=5040) | arestas=40320 | custo mínimo=117 | rota=1 -> 2 -> 8 -> 3 -> 5 -> 4 -> 6 -> 7 -> 1 | tempo=197.861µs
+2026/11/02 11:54:54 n=9 | rotas=40320 (teórico=40320) | arestas=362880 | custo mínimo=128 | rota=1 -> 2 -> 8 -> 5 -> 4 -> 3 -> 9 -> 6 -> 7 -> 1 | tempo=2.937508ms
+2026/11/02 11:54:54 n=10 | rotas=362880 (teórico=362880) | arestas=3628800 | custo mínimo=146 | rota=1 -> 2 -> 7 -> 6 -> 9 -> 3 -> 4 -> 5 -> 8 -> 10 -> 1 | tempo=20.937891ms
+2026/11/02 11:54:54 n=11 | rotas=3628800 (teórico=3628800) | arestas=39916800 | custo mínimo=165 | rota=1 -> 2 -> 7 -> 6 -> 9 -> 3 -> 10 -> 8 -> 5 -> 4 -> 11 -> 1 | tempo=241.903932ms
+2026/11/02 11:54:57 n=12 | rotas=39916800 (teórico=39916800) | arestas=479001600 | custo mínimo=191 | rota=1 -> 2 -> 7 -> 6 -> 11 -> 4 -> 5 -> 8 -> 10 -> 3 -> 9 -> 12 -> 1 | tempo=2.69076491s
+2026/11/02 11:55:30 n=13 | rotas=479001600 (teórico=479001600) | arestas=6227020800 | custo mínimo=171 | rota=1 -> 2 -> 8 -> 10 -> 3 -> 9 -> 12 -> 13 -> 5 -> 4 -> 11 -> 6 -> 7 -> 1 | tempo=32.980531361s
+2026/11/02 12:02:54 n=14 | rotas=6227020800 (teórico=6227020800) | arestas=87178291200 | custo mínimo=146 | rota=1 -> 2 -> 8 -> 10 -> 3 -> 9 -> 12 -> 13 -> 5 -> 4 -> 11 -> 6 -> 7 -> 14 -> 1 | tempo=7m24.462081083s

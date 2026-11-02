@@ -31,7 +31,6 @@ import (
 	"math"
 	"math/rand"
 	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"time"
@@ -52,6 +51,8 @@ func main() {
 	maxN := flag.Int("max-n", 10, "maior quantidade de cidades do benchmark (máximo suportado: 18)")
 	seed := flag.Int64("seed", 42, "semente para gerar custos reproduzíveis")
 	outDir := flag.String("out", "resultados", "diretório dos arquivos de saída")
+	randomStart := flag.Bool("random-start", false, "sorteia a cidade inicial para cada quantidade de cidades")
+	flag.Bool("unique-output", true, "mantido por compatibilidade; os arquivos sempre têm nomes únicos")
 	flag.Parse()
 
 	if *minN < 1 || *maxN < *minN || *maxN > 18 {
@@ -61,36 +62,54 @@ func main() {
 		log.Fatalf("não foi possível criar %q: %v", *outDir, err)
 	}
 
-	logFile, err := os.Create(filepath.Join(*outDir, "execucao_gpu.log"))
+	logFile, err := os.CreateTemp(*outDir, "execucao_gpu_*.log")
 	if err != nil {
 		log.Fatalf("não foi possível criar o log: %v", err)
 	}
 	defer logFile.Close()
+	logPath := logFile.Name()
 	logger := log.New(io.MultiWriter(os.Stdout, logFile), "", log.LstdFlags)
 
-	csvFile, err := os.Create(filepath.Join(*outDir, "results_gpu.csv"))
+	csvFile, err := os.CreateTemp(*outDir, "results_gpu_*.csv")
 	if err != nil {
 		log.Fatalf("não foi possível criar o CSV: %v", err)
 	}
 	defer csvFile.Close()
+	csvPath := csvFile.Name()
 	csvWriter := csv.NewWriter(csvFile)
 	if err := csvWriter.Write([]string{"cidades", "rotas_teoricas", "rotas_avaliadas", "arestas_avaliadas", "custo_minimo", "rota_otima", "tempo_ns", "tempo_ms"}); err != nil {
 		log.Fatalf("erro ao escrever cabeçalho CSV: %v", err)
 	}
 
-	logger.Printf("TSP por força bruta (GPU) | origem fixa: cidade 1 | semente: %d", *seed)
+	logger.Printf("TSP por força bruta (GPU) | origem aleatória: %t | semente dos custos: %d", *randomStart, *seed)
 	logger.Printf("Resultados serão gravados em %s", *outDir)
+	logger.Print("As contagens representam a primeira passagem; uma segunda passagem reavalia as rotas para recuperar a rota ótima.")
 
 	// Same seeded matrix and top-left submatrix slicing as main.go so the
 	// GPU and CPU solve identical instances.
 	weights := randomMatrix(*maxN, *seed)
+	startRNG := rand.New(rand.NewSource(time.Now().UnixNano()))
 	for n := *minN; n <= *maxN; n++ {
+		cities := make([]int, n)
+		for i := range cities {
+			cities[i] = i
+		}
+		if *randomStart {
+			start := startRNG.Intn(n)
+			cities[0], cities[start] = cities[start], cities[0]
+		}
 		matrix := make([][]int64, n)
 		for i := range matrix {
-			matrix[i] = weights[i][:n]
+			matrix[i] = make([]int64, n)
+			for j := range matrix[i] {
+				matrix[i][j] = weights[cities[i]][cities[j]]
+			}
 		}
 
 		result := solveTSPGPU(n, matrix)
+		for i, city := range result.BestRoute {
+			result.BestRoute[i] = cities[city]
+		}
 		expected := factorial(uint64(n - 1))
 		logger.Printf("n=%d | rotas=%d (teórico=%d) | arestas=%d | custo mínimo=%d | rota=%s | tempo=%s",
 			result.N, result.RoutesEvaluated, expected, result.EdgesEvaluated,
@@ -113,7 +132,7 @@ func main() {
 			log.Fatalf("erro ao salvar resultado CSV: %v", err)
 		}
 	}
-	logger.Printf("Benchmark (GPU) concluído. Arquivos: %s e %s", filepath.Join(*outDir, "execucao_gpu.log"), filepath.Join(*outDir, "results_gpu.csv"))
+	logger.Printf("Benchmark (GPU) concluído. Arquivos: %s e %s", logPath, csvPath)
 }
 
 // solveTSPGPU runs the brute-force search on the GPU via the CGO entry point.
@@ -129,9 +148,10 @@ func solveTSPGPU(n int, costs [][]int64) Result {
 
 	bestCost := C.int32_t(math.MaxInt32)
 	bestRoute := make([]C.int32_t, n+1)
+	var routes, edges C.uint64_t
 
 	started := time.Now()
-	if rc := C.tsp_gpu_run(C.int(n), (*C.int32_t)(hostPtr), &bestCost, (*C.int32_t)(unsafe.Pointer(&bestRoute[0]))); rc != 0 {
+	if rc := C.tsp_gpu_run(C.int(n), (*C.int32_t)(hostPtr), &bestCost, (*C.int32_t)(unsafe.Pointer(&bestRoute[0])), &routes, &edges); rc != 0 {
 		log.Fatalf("gpu run falhou para n=%d (rc=%d)", n, int(rc))
 	}
 	duration := time.Since(started)
@@ -144,8 +164,8 @@ func solveTSPGPU(n int, costs [][]int64) Result {
 		N:               n,
 		BestRoute:       route,
 		BestCost:        int64(bestCost),
-		RoutesEvaluated: factorial(uint64(n - 1)),
-		EdgesEvaluated:  uint64(n) * factorial(uint64(n-1)),
+		RoutesEvaluated: uint64(routes),
+		EdgesEvaluated:  uint64(edges),
 		Duration:        duration,
 	}
 }

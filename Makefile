@@ -10,7 +10,7 @@ CGO_TAGS  := gpu
 
 BUILD := tsp-gpu
 
-.PHONY: all gpu gurun clean
+.PHONY: all gpu gurun gurun-random run run-random grafico clean
 
 all: gpu
 
@@ -24,12 +24,24 @@ gpu: libtsp_gpu.a
 	go build -tags $(CGO_TAGS) -o $(BUILD) .
 
 gurun: libtsp_gpu.a
-	go run -tags $(CGO_TAGS) .
+	go run -tags $(CGO_TAGS) . $(ARGS)
+
+# Origem sorteada e arquivos exclusivos da GPU em resultados/.
+gurun-random: libtsp_gpu.a
+	go run -tags $(CGO_TAGS) . -random-start -unique-output $(ARGS)
 
 # CPU benchmark (unchanged main.go).
 run:
-	go run .
+	go run . $(ARGS)
+
+# Origem sorteada e arquivos exclusivos em resultados/.
+run-random:
+	go run . -random-start -unique-output $(ARGS)
+
+# Exemplo: make grafico RESULTADO=resultados_123.csv
+grafico:
+	@test -n "$(RESULTADO)" || { echo 'Informe o CSV: make grafico RESULTADO="arquivo.csv"'; exit 1; }
+	python3 grafico.py "resultados/$(RESULTADO)"
 
 clean:
 	rm -f tsp_gpu.o libtsp_gpu.a $(BUILD)
-	rm -f resultados/execucao_gpu.log resultados/results_gpu.csv

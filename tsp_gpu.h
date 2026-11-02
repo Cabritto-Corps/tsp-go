@@ -17,13 +17,15 @@ extern "C" {
  *
  * On return:
  *   *best_cost_out  - minimum total cost found (written by the kernel)
- *   *best_route_out - the optimal cycle as n+1 zero-indexed city ids
- *                     (starts and ends at city 0), written by the kernel
+ *   *best_route_out - the optimal cycle as n+1 zero-indexed city ids,
+ *                     reconstructed on the host from the winning index
+ *   *routes_out, *edges_out - observed counts during the first pass
  *
  * Returns 0 on success, non-zero on a CUDA error.
  */
 int tsp_gpu_run(int n, const int32_t *costs_host,
-                int32_t *best_cost_out, int32_t *best_route_out);
+                int32_t *best_cost_out, int32_t *best_route_out,
+                uint64_t *routes_out, uint64_t *edges_out);
 
 #ifdef __cplusplus
 }
