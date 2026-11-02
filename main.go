@@ -1,3 +1,5 @@
+//go:build !gpu
+
 // Programa de força bruta para o Problema do Caixeiro Viajante (TSP).
 // A cidade 0 é fixada como origem e as demais cidades são permutadas.
 // São examinadas (n-1)! rotas; cada rota avalia n arestas: Θ(n!).

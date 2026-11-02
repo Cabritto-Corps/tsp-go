@@ -1,16 +1,11 @@
-2026/10/30 10:38:42 TSP por força bruta | origem fixa: cidade 1 | semente: 42
-2026/10/30 10:38:42 Resultados serão gravados em resultados
-2026/10/30 10:38:42 n=3 | rotas=2 (teórico=2) | arestas=6 | custo mínimo=147 | rota=1 -> 2 -> 3 -> 1 | tempo=945ns
-2026/10/30 10:38:42 n=4 | rotas=6 (teórico=6) | arestas=24 | custo mínimo=148 | rota=1 -> 2 -> 3 -> 4 -> 1 | tempo=949ns
-2026/10/30 10:38:42 n=5 | rotas=24 (teórico=24) | arestas=120 | custo mínimo=138 | rota=1 -> 2 -> 3 -> 4 -> 5 -> 1 | tempo=1.781µs
-2026/10/30 10:38:42 n=6 | rotas=120 (teórico=120) | arestas=720 | custo mínimo=123 | rota=1 -> 2 -> 6 -> 4 -> 3 -> 5 -> 1 | tempo=10.625µs
-2026/10/30 10:38:42 n=7 | rotas=720 (teórico=720) | arestas=5040 | custo mínimo=162 | rota=1 -> 2 -> 3 -> 5 -> 4 -> 6 -> 7 -> 1 | tempo=41.546µs
-2026/10/30 10:38:42 n=8 | rotas=5040 (teórico=5040) | arestas=40320 | custo mínimo=117 | rota=1 -> 2 -> 8 -> 3 -> 5 -> 4 -> 6 -> 7 -> 1 | tempo=229.696µs
-2026/10/30 10:38:42 n=9 | rotas=40320 (teórico=40320) | arestas=362880 | custo mínimo=128 | rota=1 -> 2 -> 8 -> 5 -> 4 -> 3 -> 9 -> 6 -> 7 -> 1 | tempo=2.496707ms
-2026/10/30 10:38:42 n=10 | rotas=362880 (teórico=362880) | arestas=3628800 | custo mínimo=146 | rota=1 -> 2 -> 7 -> 6 -> 9 -> 3 -> 4 -> 5 -> 8 -> 10 -> 1 | tempo=26.161582ms
-2026/10/30 10:38:43 n=11 | rotas=3628800 (teórico=3628800) | arestas=39916800 | custo mínimo=165 | rota=1 -> 2 -> 7 -> 6 -> 9 -> 3 -> 10 -> 8 -> 5 -> 4 -> 11 -> 1 | tempo=283.394929ms
-2026/10/30 10:38:47 n=12 | rotas=39916800 (teórico=39916800) | arestas=479001600 | custo mínimo=191 | rota=1 -> 2 -> 7 -> 6 -> 11 -> 4 -> 5 -> 8 -> 10 -> 3 -> 9 -> 12 -> 1 | tempo=4.578635008s
-2026/10/30 10:39:42 n=13 | rotas=479001600 (teórico=479001600) | arestas=6227020800 | custo mínimo=171 | rota=1 -> 2 -> 8 -> 10 -> 3 -> 9 -> 12 -> 13 -> 5 -> 4 -> 11 -> 6 -> 7 -> 1 | tempo=54.551320589s
-2026/10/30 10:51:18 n=14 | rotas=6227020800 (teórico=6227020800) | arestas=87178291200 | custo mínimo=146 | rota=1 -> 2 -> 8 -> 10 -> 3 -> 9 -> 12 -> 13 -> 5 -> 4 -> 11 -> 6 -> 7 -> 14 -> 1 | tempo=11m36.304244055s
-2026/10/30 14:07:47 n=15 | rotas=87178291200 (teórico=87178291200) | arestas=1307674368000 | custo mínimo=124 | rota=1 -> 2 -> 8 -> 10 -> 3 -> 9 -> 6 -> 11 -> 4 -> 5 -> 13 -> 12 -> 15 -> 7 -> 14 -> 1 | tempo=3h0m13.940468691s
-2026/10/30 14:07:47 Benchmark concluído. Arquivos: resultados/execucao.log e resultados/resultados.csv
+2026/10/31 01:39:07 TSP por força bruta | origem fixa: cidade 1 | semente: 42
+2026/10/31 01:39:07 Resultados serão gravados em resultados
+2026/10/31 01:39:07 n=3 | rotas=2 (teórico=2) | arestas=6 | custo mínimo=138 | rota=1 -> 2 -> 3 -> 1 | tempo=630ns
+2026/10/31 01:39:07 n=4 | rotas=6 (teórico=6) | arestas=24 | custo mínimo=121 | rota=1 -> 2 -> 3 -> 4 -> 1 | tempo=3.73µs
+2026/10/31 01:39:07 n=5 | rotas=24 (teórico=24) | arestas=120 | custo mínimo=125 | rota=1 -> 2 -> 4 -> 3 -> 5 -> 1 | tempo=1.18µs
+2026/10/31 01:39:07 n=6 | rotas=120 (teórico=120) | arestas=720 | custo mínimo=125 | rota=1 -> 2 -> 6 -> 3 -> 4 -> 5 -> 1 | tempo=5.43µs
+2026/10/31 01:39:07 n=7 | rotas=720 (teórico=720) | arestas=5040 | custo mínimo=86 | rota=1 -> 2 -> 6 -> 3 -> 4 -> 7 -> 5 -> 1 | tempo=48.309µs
+2026/10/31 01:39:07 n=8 | rotas=5040 (teórico=5040) | arestas=40320 | custo mínimo=105 | rota=1 -> 2 -> 7 -> 5 -> 8 -> 4 -> 3 -> 6 -> 1 | tempo=384.213µs
+2026/10/31 01:39:07 n=9 | rotas=40320 (teórico=40320) | arestas=362880 | custo mínimo=109 | rota=1 -> 2 -> 7 -> 8 -> 5 -> 9 -> 4 -> 3 -> 6 -> 1 | tempo=3.575375ms
+2026/10/31 01:39:07 n=10 | rotas=362880 (teórico=362880) | arestas=3628800 | custo mínimo=132 | rota=1 -> 2 -> 6 -> 3 -> 4 -> 9 -> 8 -> 7 -> 5 -> 10 -> 1 | tempo=21.73029ms
+2026/10/31 01:39:07 Benchmark concluído. Arquivos: resultados/execucao.log e resultados/resultados.csv
