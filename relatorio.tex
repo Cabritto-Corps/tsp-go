@@ -2,7 +2,7 @@
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[brazil]{babel}
+\usepackage[brazilian]{babel}
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx}
 \usepackage{geometry}
@@ -13,9 +13,7 @@
 \geometry{margin=2.5cm}
 \hypersetup{hidelinks}
 
-% Substitua os campos entre colchetes e insira as figuras indicadas.
 % Compile com pdflatex relatorio.tex, preferencialmente duas vezes.
-\newcommand{\pendente}[1]{\textbf{[PREENCHER: #1]}}
 
 \begin{document}
 
@@ -67,32 +65,35 @@ Como a matriz gerada neste projeto é simétrica, uma rota e sua inversa têm o 
 
 Sem fixar a origem, a enumeração de todas as permutações das $n$ cidades produziria $n!$ representações. Ao fixá-la, o total é reduzido para $(n-1)!$. Como $n!=n\cdot(n-1)!$, a redução é por um fator igual a $n$. As diferentes escolhas de origem correspondem a rotações de um mesmo circuito e não alteram seu custo ótimo.
 
-O projeto também possui um modo de origem aleatória, que mantém a cidade sorteada fixa durante cada busca. Esse modo é complementar; para seguir literalmente a proposta, os resultados principais devem ser obtidos com origem fixa em $v_1$.
-
 \section{Implementação}
 
 \subsection{Algoritmo sequencial}
 
 A implementação em Go gera uma matriz simétrica de custos positivos a partir de uma semente e enumera recursivamente as permutações das cidades restantes. Para cada permutação, constrói o circuito, avalia suas $n$ arestas e atualiza a melhor solução quando encontra um custo inferior. O programa registra a rota ótima, o custo, as contagens e o tempo de busca em arquivos CSV e de log com nomes únicos. O código-fonte está disponível no repositório do projeto \cite{repositorio}.
 
+\subsection{Implementação paralela em GPU}
+
+Além da versão sequencial, o projeto possui uma implementação em CUDA, integrada ao programa em Go por meio de CGO. A matriz de custos é preparada no hospedeiro e copiada para a memória da GPU. A enumeração das $(n-1)!$ permutações é distribuída entre as threads CUDA: cada thread calcula custos de rotas e participa da redução do menor custo. Como uma redução paralela identifica o custo mínimo, mas não necessariamente a rota que o produziu, uma segunda passagem procura o índice da primeira rota com esse custo. A partir desse índice, o programa reconstrói a rota ótima e devolve o resultado ao Go.
+
+O tempo da versão GPU registrado pelo programa inclui a chamada à rotina CUDA, alocação e transferência de dados, as duas passagens de busca e a sincronização necessária para obter os resultados no hospedeiro. Portanto, especialmente para entradas pequenas, o custo fixo de inicialização e transferência pode ser maior que o tempo efetivamente gasto calculando rotas. A versão é compilada com a tag \texttt{gpu}; por exemplo, \texttt{make gurun ARGS="-min-n 3 -max-n 16"}. A compilação requer CUDA/NVIDIA e as ferramentas configuradas no \texttt{Makefile}.
+
 \section{Metodologia experimental}
 
 \subsection{Ambiente e configuração}
 
-Os experimentos devem identificar o ambiente e os parâmetros utilizados:
+Os experimentos foram executados em computadores distintos para CPU e GPU. As configurações informadas são:
 \begin{itemize}
-    \item Processador e memória: \pendente{modelo e capacidade};
-    \item Sistema operacional e versão do Go: \pendente{informações};
-    \item Intervalo de cidades: \pendente{valores mínimo e máximo};
-    \item Semente da matriz: \pendente{valor utilizado};
-    \item Repetições por tamanho e tratamento das amostras: \pendente{informar procedimento}.
+    \item CPU (notebook): AMD Ryzen 7 4800H, 20 GB de RAM e EndeavourOS (baseado em Arch Linux);
+    \item GPU: AMD Ryzen 7 5700G, 32 GB de RAM e NVIDIA GeForce RTX 5060 Ti com 16 GB, usando CachyOS;
+    \item Go 1.27.3 nas execuções; CUDA 13.4.92 na execução GPU;
+    \item CPU: $n=3$ a $n=15$; GPU: $n=3$ a $n=17$; origem fixa na cidade 1 e semente 42.
 \end{itemize}
 
-O tempo registrado compreende a enumeração, a montagem e a avaliação das rotas, incluindo a instrumentação. A geração da matriz e a escrita do CSV não fazem parte desse intervalo. O registro detalhado de todas as rotas não deve ser ativado nos testes de desempenho, pois a escrita no log pode afetar os tempos.
+O tempo registrado compreende a enumeração, a montagem e a avaliação das rotas, incluindo a instrumentação. Na GPU inclui as duas passagens. A geração da matriz e a escrita do CSV não fazem parte desse intervalo. O registro detalhado de todas as rotas não deve ser ativado nos testes de desempenho, pois a escrita no log pode afetar os tempos.
 
-Cada execução do programa produz uma amostra por valor de $n$. Recomenda-se repetir as execuções e apresentar uma medida como a mediana, indicando o número de repetições. Os resultados e suas condições devem ser registrados sem substituir medições ausentes por estimativas.
+Para cada tamanho $n$, o programa enumera as rotas e registra o tempo de busca. Quando existem várias execuções para o mesmo tamanho e dispositivo, os tempos são resumidos pela mediana: ordenam-se as amostras e toma-se o valor central (ou a média dos dois centrais, se a quantidade for par). Foram consideradas seis execuções de CPU para $n=3$ a $n=10$, entre quatro e cinco para $n=11$ a $n=14$, e uma para $n=15$. Na GPU, há duas amostras para $n=3$ a $n=16$ e uma para $n=17$. Portanto, os resultados para $n=15$ na CPU e $n=17$ na GPU são medições únicas, não medianas robustas. Os comandos para reproduzir a agregação estão na Seção~\ref{sec:comandos}; as tabelas e os gráficos deste relatório já apresentam os valores calculados, sem exigir acesso aos arquivos CSV.
 
-\subsection{Comandos utilizados}
+\subsection{Comandos utilizados}\label{sec:comandos}
 
 Para a execução principal com origem fixa, por exemplo:
 \begin{verbatim}
@@ -104,34 +105,91 @@ make grafico RESULTADO="nome_do_arquivo.csv"
 \end{verbatim}
 O CSV é lido em \texttt{resultados/}, e o gráfico PNG e a tabela são gerados em \texttt{grafricos/}. Os nomes dos arquivos são únicos.
 
+Para medir empiricamente todas as origens, inclusive suas rotações redundantes, executa-se, por exemplo:
+\begin{verbatim}
+make run-random ARGS="-min-n 3 -max-n 15"
+make gurun-random ARGS="-min-n 3 -max-n 17"
+\end{verbatim}
+Apesar do nome histórico dos comandos, eles usam \texttt{-all-starts}: para cada $n$, executam a busca a partir de cada cidade, enumerando $n!$ representações distintas. Isso difere de \texttt{-random-start}, que sorteia uma única origem e ainda gera apenas $(n-1)!$ rotas. Os resultados sem fixação ficam em arquivos \texttt{sem\_fixar\_cpu\_*.csv} e \texttt{sem\_fixar\_gpu\_*.csv}, separados dos resultados com origem fixa. O tempo registrado é a soma dos tempos das buscas por origem; na GPU, cada busca inclui duas passagens e seus custos de CUDA. Após novas medições, regenere o apêndice e compile o relatório novamente. Os testes de maior tamanho podem levar muitas horas ou dias.
+
+Para agregar todas as execuções disponíveis e produzir gráficos separados com mediana:
+\begin{verbatim}
+make grafico-mediana DISPOSITIVO=cpu
+make grafico-mediana DISPOSITIVO=gpu
+\end{verbatim}
+O comando lê \texttt{resultados/resultados*.csv} para CPU e \texttt{resultados/results\_gpu*.csv} para GPU. Gera \texttt{Grafico\_CPU\_mediana.png} ou \texttt{Grafico\_GPU\_mediana.png} e a tabela CSV correspondente em \texttt{grafricos/}. Cada tabela inclui o número de amostras usadas por tamanho.
+
+O Apêndice~\ref{ap:amostras} apresenta todos os tempos individuais, seus arquivos de origem e os valores mínimo, mediano e máximo por tamanho. Ele pode ser regenerado com \texttt{python3 tabela\_amostras.py}. A agregação reúne todos os CSVs encontrados por dispositivo; não é possível confirmar pelos CSVs isoladamente se todas as versões do programa e condições de execução eram idênticas. Os intervalos mostram a variação observada, não um intervalo de confiança. Além disso, a matriz é gerada com dimensão \texttt{max-n} antes de extrair as submatrizes: a mesma semente com valores diferentes de \texttt{max-n} não garante instâncias iguais. Para reprodução e comparação controlada, devem-se registrar o comando completo e a versão do código, usar a mesma matriz e manter as condições de execução constantes.
+
+Para gerar a comparação teórica entre fixar e não fixar a origem, sem executar outro benchmark:
+\begin{verbatim}
+make grafico-reducao
+\end{verbatim}
+Esse comando calcula os fatoriais e gera o gráfico e a tabela CSV em \texttt{grafricos/}.
+
 \section{Resultados e validação}
 
 \subsection{Tabela de crescimento combinatório}
 
-A Tabela~\ref{tab:resultados} deve ser preenchida com os dados efetivamente obtidos. A coluna $n!$ representa o número teórico de avaliações de arestas, enquanto as colunas de rotas e arestas medidas são extraídas do CSV. Acrescente ou remova linhas conforme o intervalo experimental.
+A Tabela~\ref{tab:cpu} e a Tabela~\ref{tab:gpu} apresentam as contagens teóricas por passagem e os tempos resumidos por mediana, em milissegundos. A comparação com os registros confirmou, em todas as entradas, $(n-1)!$ rotas e $n!$ avaliações de arestas na CPU e na primeira passagem da GPU. Por exemplo, para $n=10$ foram registradas 362.880 rotas e 3.628.800 avaliações de arestas. Os CSVs históricos da GPU contabilizam apenas a primeira passagem, embora o tempo inclua duas. A segunda passagem reavalia todas as rotas; portanto, o total efetivo das duas passagens é $2(n-1)!$ avaliações de rotas e $2n!$ avaliações de arestas. Os tempos resumem as amostras disponíveis; os valores individuais constam no apêndice.
 
 \begin{longtable}{rrrrr}
-\caption{Crescimento fatorial e resultados experimentais.}\label{tab:resultados}\\
+\caption{Resultados da execução em CPU: contagens teóricas e mediana do tempo.}\label{tab:cpu}\\
 \toprule
-$n$ & $(n-1)!$ & $n!$ & Arestas medidas & Tempo (ms) \\
+$n$ & $(n-1)!$ & $n!$ & Amostras & Mediana (ms) \\
 \midrule
 \endfirsthead
 \toprule
-$n$ & $(n-1)!$ & $n!$ & Arestas medidas & Tempo (ms) \\
+$n$ & $(n-1)!$ & $n!$ & Amostras & Mediana (ms) \\
 \midrule
 \endhead
-3 & 2 & 6 & \pendente{valor} & \pendente{valor} \\
-4 & 6 & 24 & \pendente{valor} & \pendente{valor} \\
-5 & 24 & 120 & \pendente{valor} & \pendente{valor} \\
-6 & 120 & 720 & \pendente{valor} & \pendente{valor} \\
+3 & 2 & 6 & 6 & 0,000922 \\
+4 & 6 & 24 & 6 & 0,000547 \\
+5 & 24 & 120 & 6 & 0,001182 \\
+6 & 120 & 720 & 6 & 0,005270 \\
+7 & 720 & 5.040 & 6 & 0,031848 \\
+8 & 5.040 & 40.320 & 6 & 0,323821 \\
+9 & 40.320 & 362.880 & 6 & 3,124497 \\
+10 & 362.880 & 3.628.800 & 6 & 22,118782 \\
+11 & 3.628.800 & 39.916.800 & 5 & 234,589688 \\
+12 & 39.916.800 & 479.001.600 & 5 & 2.675,783333 \\
+13 & 479.001.600 & 6.227.020.800 & 4 & 31.836,321137 \\
+14 & 6.227.020.800 & 87.178.291.200 & 4 & 433.055,072678 \\
+15 & 87.178.291.200 & 1.307.674.368.000 & 1 & 5.981.114,958103 \\
 \bottomrule
 \end{longtable}
 
-\noindent\pendente{Adicionar as demais linhas até o maior valor de n testado e comparar também as rotas medidas com $(n-1)!$.}
+\begin{longtable}{rrrrr}
+\caption{Resultados da execução em GPU: contagens teóricas e mediana do tempo.}\label{tab:gpu}\\
+\toprule
+$n$ & $(n-1)!$ & $n!$ & Amostras & Mediana (ms) \\
+\midrule
+\endfirsthead
+\toprule
+$n$ & $(n-1)!$ & $n!$ & Amostras & Mediana (ms) \\
+\midrule
+\endhead
+3 & 2 & 6 & 2 & 151,951220 \\
+4 & 6 & 24 & 2 & 0,211461 \\
+5 & 24 & 120 & 2 & 0,737821 \\
+6 & 120 & 720 & 2 & 0,348593 \\
+7 & 720 & 5.040 & 2 & 0,184059 \\
+8 & 5.040 & 40.320 & 2 & 0,283575 \\
+9 & 40.320 & 362.880 & 2 & 0,229065 \\
+10 & 362.880 & 3.628.800 & 2 & 0,571896 \\
+11 & 3.628.800 & 39.916.800 & 2 & 3,330259 \\
+12 & 39.916.800 & 479.001.600 & 2 & 32,461620 \\
+13 & 479.001.600 & 6.227.020.800 & 2 & 402,219234 \\
+14 & 6.227.020.800 & 87.178.291.200 & 2 & 6.073,329214 \\
+15 & 87.178.291.200 & 1.307.674.368.000 & 2 & 104.752,111644 \\
+16 & 1.307.674.368.000 & 20.922.789.888.000 & 2 & 1.592.764,836502 \\
+17 & 20.922.789.888.000 & 355.687.428.096.000 & 1 & 27.074.814,512025 \\
+\bottomrule
+\end{longtable}
 
 \subsection{Curva teórica e dados empíricos}
 
-O gráfico sobrepõe o tempo observado à função $f(n)=c\cdot n!$. A constante $c$ é ajustada pelo método dos mínimos quadrados aos tempos em milissegundos, considerando uma reta que passa pela origem. Para os pares $(x_i,y_i)=(n_i!,t_i)$, o valor utilizado é
+Cada gráfico sobrepõe o tempo medido à função $f(n)=c\cdot n!$. A constante $c$ é ajustada pelo método dos mínimos quadrados aos tempos em milissegundos, considerando uma reta que passa pela origem. Nos gráficos agregados, $t_i$ é a mediana das amostras disponíveis para o tamanho $n_i$; quando existe apenas uma amostra, a mediana coincide com esse único valor. Para os pares $(x_i,y_i)=(n_i!,t_i)$, o valor utilizado é
 \begin{equation}
  c=\frac{\sum_i x_i y_i}{\sum_i x_i^2}.
 \end{equation}
@@ -139,39 +197,82 @@ O ajuste é realizado sobre os tempos em escala linear; consequentemente, as mai
 
 \begin{figure}[H]
     \centering
-    % Substitua pelo caminho do gráfico PNG escolhido e remova o comentário:
-    % \includegraphics[width=\linewidth]{grafricos/nome_do_grafico.png}
-    \fbox{\parbox[c][5cm][c]{0.8\linewidth}{\centering Espaço para o gráfico de tempo medido e $c\cdot n!$}}
-    \caption{Comparação entre o tempo medido e a curva fatorial calibrada.}
-    \label{fig:grafico}
+    \includegraphics[width=\linewidth]{grafricos/Grafico_CPU_mediana.png}
+    \caption{Mediana dos tempos da CPU e ajuste fatorial.}
+    \label{fig:grafico-cpu}
 \end{figure}
 
-\noindent\pendente{Informar o arquivo de dados, o valor de c, o intervalo testado e interpretar as diferenças observadas entre as curvas.}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{grafricos/Grafico_GPU_mediana.png}
+    \caption{Mediana dos tempos da GPU e ajuste fatorial.}
+    \label{fig:grafico-gpu}
+\end{figure}
+
+Na execução em CPU (Figura~\ref{fig:grafico-cpu}), o gráfico abrange $n=3$ a $n=15$ e o ajuste às medianas informa $c=4{,}57561\times10^{-6}$ ms/$n!$. Na execução em GPU (Figura~\ref{fig:grafico-gpu}), o intervalo é $n=3$ a $n=17$ e o ajuste informa $c=7{,}61198\times10^{-8}$ ms/$n!$. Esses coeficientes são ajustes independentes, calculados sobre os dados de cada execução, e não constituem uma razão de desempenho entre CPU e GPU.
+
+Como exemplos concretos da tabela, em $n=10$ a mediana foi de 22,118782 ms na CPU (seis amostras) e 0,571896 ms na GPU (duas amostras). Na CPU, $n=14$ levou em mediana 433.055,072678 ms, aproximadamente 7 min 13 s, considerando quatro amostras. O maior caso concluído na GPU, $n=17$, levou 27.074.814,512025 ms, aproximadamente 7 h 31 min, mas esse valor veio de uma única execução. A mediana de uma só amostra é apenas o tempo observado naquela execução.
+
+As medições foram realizadas em computadores diferentes, portanto os gráficos não isolam o efeito do dispositivo: processadores, memória e sistemas operacionais também diferem. O tempo para $n=3$ na GPU é alto em relação aos tamanhos seguintes, compatível com o custo fixo de inicialização e transferência CUDA. Para comparação controlada de desempenho, seria necessário executar ambas as versões na mesma máquina, com as mesmas instâncias e várias repetições. O ajuste fatorial descreve o crescimento; não demonstra, por si só, que os tempos de CPU e GPU sejam comparáveis.
 
 \subsection{Evidências de execução}
 
 \begin{figure}[H]
     \centering
-    % Exemplo: \includegraphics[width=\linewidth]{caminho/print.png}
-    \fbox{\parbox[c][4cm][c]{0.8\linewidth}{\centering Espaço para captura da execução ou dos resultados}}
-    \caption{Evidência da execução do programa.}
+    \includegraphics[width=\linewidth]{grafricos/Execucao_CPU.png}
+    \caption{Saída da execução CPU, incluindo as contagens e tempos registrados.}
+    \label{fig:execucao-cpu}
 \end{figure}
 
-\noindent\pendente{Inserir capturas relevantes e descrever o que cada uma comprova.}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{grafricos/Execucao_GPU.png}
+    \caption{Saída da execução GPU, incluindo as contagens e tempos registrados.}
+    \label{fig:execucao-gpu}
+\end{figure}
 
 \section{Discussão das questões investigativas}
 
 \subsection{Redução do espaço de busca}
 
-A fixação de $v_1$ reduz a enumeração de $n!$ para $(n-1)!$ representações, um fator de redução igual a $n$. Essa economia deve ser verificada comparando a coluna de rotas avaliadas do CSV com $(n-1)!$ para cada entrada. \pendente{Apresentar um exemplo com os dados da execução.}
+Sem fixar a cidade inicial, seriam enumeradas $n!$ permutações. Como cada circuito pode ser escrito começando por qualquer uma das suas $n$ cidades, essas permutações incluem $n$ rotações do mesmo circuito. Fixar $v_1$ elimina essa redundância e deixa $(n-1)!$ rotas, reduzindo por um fator $n$. Como cada rota exige avaliar $n$ arestas, sem a fixação seriam feitas $n\cdot n!$ avaliações de arestas; com a fixação, são $n\cdot(n-1)!=n!$.
+
+O código reflete essa redução: tanto a versão sequencial quanto a GPU mantêm a cidade de início fixa (cidade 1 nos testes principais) e permutam apenas as demais. Para $n=10$, por exemplo, a CPU e cada passagem da GPU avaliaram $9!=362.880$ rotas e $10!=3.628.800$ arestas. Sem fixar a origem, seriam $10!=3.628.800$ representações de rotas e $10\cdot10!=36.288.000$ avaliações de arestas por passagem, sem obter novos circuitos distintos nem melhorar o custo ótimo. As contagens históricas observadas coincidem com os valores teóricos por passagem para todos os tamanhos testados.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Comparação teórica do espaço de busca com e sem origem fixa.}
+\label{tab:reducao-origem}
+\begin{tabular}{r r r r r}
+\toprule
+$n$ & Rotas fixas & Rotas sem fixar & Arestas fixas & Arestas sem fixar \\
+\midrule
+3  & 2 & 6 & 6 & 18 \\
+6  & 120 & 720 & 720 & 4.320 \\
+10 & 362.880 & 3.628.800 & 3.628.800 & 36.288.000 \\
+15 & $8{,}72\times10^{10}$ & $1{,}31\times10^{12}$ & $1{,}31\times10^{12}$ & $1{,}96\times10^{13}$ \\
+17 & $2{,}09\times10^{13}$ & $3{,}56\times10^{14}$ & $3{,}56\times10^{14}$ & $6{,}05\times10^{15}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Os valores da Tabela~\ref{tab:reducao-origem} são calculados pelas fórmulas por passagem; não representam medições sem fixação. A Figura~\ref{fig:reducao-origem} também é teórica. O modo de todas as origens permite verificar empiricamente esses valores: na CPU, contam-se $n!$ rotas e $n\cdot n!$ arestas; na GPU corrigida, são $2n!$ avaliações de rotas e $2n\cdot n!$ arestas nas duas passagens. O apêndice inclui automaticamente os tempos sem fixação quando houver CSVs desse modo, e o gerador confere suas contagens. Até a execução desses testes, não se deve apresentá-los como resultados observados.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{grafricos/Reducao_busca.png}
+    \caption{Quantidade teórica de rotas e avaliações de arestas com origem fixa e sem fixá-la.}
+    \label{fig:reducao-origem}
+\end{figure}
 
 \subsection{Custo de avaliação por rota}
 
-A avaliação percorre as $n$ arestas do circuito, inclusive a aresta de retorno. Dessa forma, o trabalho de avaliação de uma rota é $\Theta(n)$ e as avaliações de arestas nas $(n-1)!$ rotas somam $n!$. \pendente{Comparar a contagem registrada com a teoria para pelo menos um valor de n.}
+A avaliação percorre as $n$ arestas do circuito, inclusive o retorno à origem. Para $n=10$, foram avaliadas $362.880$ rotas e $3.628.800$ arestas ($10\cdot362.880=10!$) na CPU e em cada passagem GPU. Na CPU, a avaliação e montagem da rota custam $\Theta(n)$ por rota, e a busca completa custa $\Theta(n!)$. Na GPU, embora haja $n$ consultas de arestas por rota, a reconstrução da permutação também percorre cidades candidatas em laços aninhados, podendo custar $\Theta(n^2)$ por rota. Logo, a contagem de arestas isoladamente não descreve todo o trabalho nem o tempo paralelo da GPU.
 
 \subsection{Limiar prático da intratabilidade}
 
-O ponto em que a execução passa a levar minutos ou horas depende do hardware, da implementação e das condições de teste. \pendente{Informar o primeiro n observado com tempo em minutos ou horas, a duração, o arquivo de origem e o ambiente. Se o limiar não tiver sido atingido, declarar isso.}
+Na CPU, $n=13$ levou em mediana aproximadamente 31,84 s; o primeiro tempo acima de um minuto ocorreu em $n=14$, com cerca de 7 min 13 s. Para $n=15$, a única amostra disponível levou aproximadamente 1 h 39 min 41 s. Na GPU, $n=14$ levou cerca de 6,07 s, $n=15$ cerca de 1 min 45 s, $n=16$ cerca de 26 min 33 s e $n=17$ cerca de 7 h 31 min. Os tempos para os maiores tamanhos são observações de uma amostra e não devem ser tratados como estimativas estáveis; o tempo GPU inclui inicialização e transferências. Os registros das execuções estão nas Figuras~\ref{fig:execucao-cpu} e~\ref{fig:execucao-gpu}.
 
 O Merge Sort é um exemplo de algoritmo com complexidade $\Theta(n\log n)$, enquanto a busca exaustiva sequencial aqui estudada tem crescimento fatorial. A recorrência $T(n)=2T(n-1)+c$ discutida na seção 4.2 do material é um exemplo distinto de crescimento $\Theta(2^n)$; ela não é a recorrência usada para deduzir o custo deste TSP. A comparação evidencia que fatores polinomiais, exponenciais e fatoriais produzem comportamentos muito diferentes conforme a entrada aumenta.
 
@@ -183,14 +284,16 @@ Uma heurística gulosa pode escolher, em cada passo, uma cidade que pareça vant
 
 \section{Conclusão}
 
-O estudo relacionou a enumeração de $(n-1)!$ rotas e a avaliação de $n$ arestas por rota à complexidade $\Theta(n!)$ da abordagem sequencial de força bruta. A fixação da origem elimina representações redundantes por rotação, mas não impede o crescimento fatorial.
-
-\pendente{Sintetizar os resultados realmente obtidos, o maior n concluído, as limitações das medições e as conclusões extraídas do gráfico.}
+O estudo confirmou a enumeração de $(n-1)!$ rotas e a avaliação de $n!$ arestas por passagem. A GPU executa duas passagens, embora os contadores dos CSVs históricos registrem apenas a primeira; a versão corrigida do código registra ambas. A implementação CPU concluiu até $n=15$ e a GPU até $n=17$, mas ambas apresentaram crescimento acentuado do tempo, ilustrando a intratabilidade prática da busca exaustiva. A GPU concluiu instâncias maiores no equipamento testado, mas os ambientes distintos, o número desigual de amostras e os custos de inicialização e transferência impedem uma comparação rigorosa de desempenho. As medianas agregadas são mais informativas que uma amostra isolada quando há repetições; onde só há uma execução, a limitação foi mantida explícita. Uma avaliação futura deve repetir cada tamanho várias vezes e, para comparar CPU e GPU, usar o mesmo computador e as mesmas condições.
 
 \begin{thebibliography}{9}
 \bibitem{material} UNIVERSIDADE DE VILA VELHA. \textit{Projeto e Análise de Algoritmos: Unidade 4}. Material da disciplina, seções 4.1 e 4.2.
 \bibitem{proposta} \textit{Proposta de Atividade Investigativa: Explorando a Intratabilidade e a Força Bruta no Problema do Caixeiro Viajante (TSP)}. Documento fornecido para a atividade.
 \bibitem{repositorio} CABRITTO CORPS. \textit{tsp-go: implementação do Problema do Caixeiro Viajante}. Repositório de código-fonte. Disponível em: \url{https://github.com/Cabritto-Corps/tsp-go}.
 \end{thebibliography}
+
+\appendix
+\section{Tempos individuais e dispersão}\label{ap:amostras}
+\input{amostras.tex}
 
 \end{document}

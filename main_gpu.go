@@ -54,8 +54,12 @@ func main() {
 	outDir := flag.String("out", "resultados", "diretório dos arquivos de saída")
 	verbose := flag.Bool("verbose", false, "registra o custo de cada rota no arquivo de log")
 	randomStart := flag.Bool("random-start", false, "sorteia a cidade inicial para cada quantidade de cidades")
+	allStarts := flag.Bool("all-starts", false, "enumera as rotas para todas as cidades iniciais")
 	flag.Bool("unique-output", true, "mantido por compatibilidade; os arquivos sempre têm nomes únicos")
 	flag.Parse()
+	if *randomStart && *allStarts {
+		log.Fatal("use apenas um de -random-start e -all-starts")
+	}
 
 	if *minN < 1 || *maxN < *minN || *maxN > 18 {
 		log.Fatalf("intervalo inválido: use 1 <= min-n <= max-n <= 18")
@@ -64,7 +68,11 @@ func main() {
 		log.Fatalf("não foi possível criar %q: %v", *outDir, err)
 	}
 
-	logFile, err := os.CreateTemp(*outDir, "execucao_gpu_*.log")
+	logPrefix, csvPrefix := "execucao_gpu_*.log", "results_gpu_*.csv"
+	if *allStarts {
+		logPrefix, csvPrefix = "execucao_sem_fixar_gpu_*.log", "sem_fixar_gpu_*.csv"
+	}
+	logFile, err := os.CreateTemp(*outDir, logPrefix)
 	if err != nil {
 		log.Fatalf("não foi possível criar o log: %v", err)
 	}
@@ -72,7 +80,7 @@ func main() {
 	logPath := logFile.Name()
 	logger := log.New(io.MultiWriter(os.Stdout, logFile), "", log.LstdFlags)
 
-	csvFile, err := os.CreateTemp(*outDir, "results_gpu_*.csv")
+	csvFile, err := os.CreateTemp(*outDir, csvPrefix)
 	if err != nil {
 		log.Fatalf("não foi possível criar o CSV: %v", err)
 	}
@@ -83,9 +91,9 @@ func main() {
 		log.Fatalf("erro ao escrever cabeçalho CSV: %v", err)
 	}
 
-	logger.Printf("TSP por força bruta (GPU) | origem aleatória: %t | semente dos custos: %d", *randomStart, *seed)
+	logger.Printf("TSP por força bruta (GPU) | todas as origens: %t | origem aleatória: %t | semente dos custos: %d | max-n: %d", *allStarts, *randomStart, *seed, *maxN)
 	logger.Printf("Resultados serão gravados em %s", *outDir)
-	logger.Print("As contagens representam a primeira passagem; uma segunda passagem reavalia as rotas para recuperar a rota ótima.")
+	logger.Print("As contagens incluem as duas passagens; cada rota é reavaliada para recuperar a rota ótima.")
 	if *verbose {
 		logger.Print("A listagem detalhada é reproduzida no CPU e não entra no tempo medido da GPU.")
 	}
@@ -104,16 +112,38 @@ func main() {
 			start = startRNG.Intn(n)
 		}
 		if *verbose {
-			logRoutes(matrix, start, logger)
+			if *allStarts {
+				for city := 0; city < n; city++ {
+					logRoutes(matrix, city, logger)
+				}
+			} else {
+				logRoutes(matrix, start, logger)
+			}
 		}
 
 		result := solveTSPGPU(n, start, matrix)
+		if *allStarts {
+			logger.Printf("n=%d | origem 1/%d concluída", n, n)
+			for city := 1; city < n; city++ {
+				next := solveTSPGPU(n, city, matrix)
+				result.Duration += next.Duration
+				result.RoutesEvaluated += next.RoutesEvaluated
+				result.EdgesEvaluated += next.EdgesEvaluated
+				if next.BestCost < result.BestCost {
+					result.BestCost, result.BestRoute = next.BestCost, next.BestRoute
+				}
+				logger.Printf("n=%d | origem %d/%d concluída", n, city+1, n)
+			}
+		}
 		expected := factorial(uint64(n - 1))
-		logger.Printf("n=%d | rotas=%d (teórico=%d) | arestas=%d | custo mínimo=%d | rota=%s | tempo=%s",
-			result.N, result.RoutesEvaluated, expected, result.EdgesEvaluated,
+		if *allStarts {
+			expected *= uint64(n)
+		}
+		logger.Printf("n=%d | avaliações de rotas=%d (teórico em duas passagens=%d) | arestas=%d | custo mínimo=%d | rota=%s | tempo=%s",
+			result.N, result.RoutesEvaluated, 2*expected, result.EdgesEvaluated,
 			result.BestCost, formatRoute(result.BestRoute), result.Duration)
-		if result.RoutesEvaluated != expected {
-			log.Fatalf("contagem incorreta de rotas para n=%d: esperado %d, obtido %d", n, expected, result.RoutesEvaluated)
+		if result.RoutesEvaluated != 2*expected || result.EdgesEvaluated != 2*expected*uint64(n) {
+			log.Fatalf("contagens incorretas para n=%d: rotas=%d, arestas=%d", n, result.RoutesEvaluated, result.EdgesEvaluated)
 		}
 		row := []string{
 			strconv.Itoa(n), strconv.FormatUint(expected, 10),

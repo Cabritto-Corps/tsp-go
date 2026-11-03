@@ -52,12 +52,19 @@ __global__ void pass_min(int n, int start, const int32_t *costs, uint64_t total,
 }
 
 __global__ void pass_index(int n, int start, const int32_t *costs, uint64_t total,
-                           const int32_t *best, unsigned long long *best_index) {
+                           const int32_t *best, unsigned long long *best_index,
+                           unsigned long long *routes, unsigned long long *edges) {
     uint64_t stride = (uint64_t)gridDim.x * blockDim.x;
+    unsigned long long count = 0, edge_count = 0;
     for (uint64_t t = (uint64_t)blockIdx.x * blockDim.x + threadIdx.x;
          t < total; t += stride) {
-        if (route_cost(n, start, costs, t, nullptr) == *best)
+        if (route_cost(n, start, costs, t, &edge_count) == *best)
             atomicMin(best_index, (unsigned long long)t);
+        count++;
+    }
+    if (count) {
+        atomicAdd(routes, count);
+        atomicAdd(edges, edge_count);
     }
 }
 
@@ -85,7 +92,7 @@ extern "C" int tsp_gpu_run(int n, int start, const int32_t *host, int32_t *best_
     int grid = (int)((total + 255) / 256 < 2048 ? (total + 255) / 256 : 2048);
     pass_min<<<grid, 256>>>(n, start, costs, total, best, routes, edges);
     if (!check(cudaGetLastError())) return 1;
-    pass_index<<<grid, 256>>>(n, start, costs, total, best, index);
+    pass_index<<<grid, 256>>>(n, start, costs, total, best, index, routes, edges);
     if (!check(cudaGetLastError())) return 1;
     if (!check(cudaMemcpy(best_out, best, sizeof(*best_out), cudaMemcpyDeviceToHost))) return 1;
     if (!check(cudaMemcpy(&host_index, index, sizeof(host_index), cudaMemcpyDeviceToHost))) return 1;

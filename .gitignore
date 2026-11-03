@@ -1,1 +1,4 @@
 .build/
+build/*
+!build/relatorio.pdf
+__pycache__/

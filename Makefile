@@ -16,7 +16,7 @@ GPU_LIBRARY := $(GPU_BUILD)/libtsp_gpu.a
 GPU_CONFIG := $(GPU_BUILD)/build-config
 BUILD := $(GPU_BUILD)/tsp-gpu
 
-.PHONY: all gpu gurun gurun-random run run-random grafico clean FORCE libtsp_gpu.a
+.PHONY: all gpu gurun gurun-random run run-random grafico grafico-mediana grafico-reducao clean FORCE libtsp_gpu.a
 
 all: gpu
 
@@ -41,22 +41,32 @@ gpu: libtsp_gpu.a
 gurun: libtsp_gpu.a
 	go run -tags $(CGO_TAGS) . $(ARGS)
 
-# Origem sorteada e arquivos exclusivos da GPU em resultados/.
+# Enumera todas as origens, sem fixação global.
 gurun-random: libtsp_gpu.a
-	go run -tags $(CGO_TAGS) . -random-start -unique-output $(ARGS)
+	go run -tags $(CGO_TAGS) . -all-starts $(ARGS)
 
 # CPU benchmark (unchanged main.go).
 run:
 	go run . $(ARGS)
 
-# Origem sorteada e arquivos exclusivos em resultados/.
+# Enumera todas as origens, sem fixação global.
 run-random:
-	go run . -random-start -unique-output $(ARGS)
+	go run . -all-starts $(ARGS)
 
 # Exemplo: make grafico RESULTADO=resultados_123.csv
 grafico:
 	@test -n "$(RESULTADO)" || { echo 'Informe o CSV: make grafico RESULTADO="arquivo.csv"'; exit 1; }
 	python3 grafico.py "resultados/$(RESULTADO)"
+
+# Agrega todos os CSVs do dispositivo e plota a mediana de tempo por n.
+# Exemplos: make grafico-mediana DISPOSITIVO=cpu|gpu
+grafico-mediana:
+	@test "$(DISPOSITIVO)" = cpu -o "$(DISPOSITIVO)" = gpu || { echo 'Use DISPOSITIVO=cpu ou DISPOSITIVO=gpu'; exit 1; }
+	python3 grafico_mediana.py "$(DISPOSITIVO)"
+
+# Comparação teórica entre fixar a origem e enumerar todas as permutações.
+grafico-reducao:
+	python3 grafico_reducao.py
 
 clean:
 	rm -rf $(GPU_BUILD)

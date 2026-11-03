@@ -35,8 +35,12 @@ func main() {
 	outDir := flag.String("out", "resultados", "diretório dos arquivos de saída")
 	verbose := flag.Bool("verbose", false, "registra o custo de cada rota no arquivo de log")
 	randomStart := flag.Bool("random-start", false, "sorteia a cidade inicial para cada quantidade de cidades")
+	allStarts := flag.Bool("all-starts", false, "enumera as rotas para todas as cidades iniciais")
 	flag.Bool("unique-output", true, "mantido por compatibilidade; os arquivos sempre têm nomes únicos")
 	flag.Parse()
+	if *randomStart && *allStarts {
+		log.Fatal("use apenas um de -random-start e -all-starts")
+	}
 
 	if *minN < 1 || *maxN < *minN || *maxN > 18 {
 		log.Fatalf("intervalo inválido: use 1 <= min-n <= max-n <= 18")
@@ -45,7 +49,11 @@ func main() {
 		log.Fatalf("não foi possível criar %q: %v", *outDir, err)
 	}
 
-	logFile, err := os.CreateTemp(*outDir, "execucao_*.log")
+	logPrefix, csvPrefix := "execucao_*.log", "resultados_*.csv"
+	if *allStarts {
+		logPrefix, csvPrefix = "execucao_sem_fixar_*.log", "sem_fixar_cpu_*.csv"
+	}
+	logFile, err := os.CreateTemp(*outDir, logPrefix)
 	if err != nil {
 		log.Fatalf("não foi possível criar o log: %v", err)
 	}
@@ -53,7 +61,7 @@ func main() {
 	logPath := logFile.Name()
 	logger := log.New(io.MultiWriter(os.Stdout, logFile), "", log.LstdFlags)
 
-	csvFile, err := os.CreateTemp(*outDir, "resultados_*.csv")
+	csvFile, err := os.CreateTemp(*outDir, csvPrefix)
 	if err != nil {
 		log.Fatalf("não foi possível criar o CSV: %v", err)
 	}
@@ -64,7 +72,7 @@ func main() {
 		log.Fatalf("erro ao escrever cabeçalho CSV: %v", err)
 	}
 
-	logger.Printf("TSP por força bruta | origem aleatória: %t | semente dos custos: %d", *randomStart, *seed)
+	logger.Printf("TSP por força bruta | todas as origens: %t | origem aleatória: %t | semente dos custos: %d | max-n: %d", *allStarts, *randomStart, *seed, *maxN)
 	logger.Printf("Resultados serão gravados em %s", *outDir)
 	weights := randomMatrix(*maxN, *seed)
 	startRNG := rand.New(rand.NewSource(time.Now().UnixNano()))
@@ -88,11 +96,30 @@ func main() {
 		if err != nil {
 			log.Fatalf("erro ao resolver para n=%d: %v", n, err)
 		}
+		if *allStarts {
+			logger.Printf("n=%d | origem 1/%d concluída", n, n)
+			for city := 1; city < n; city++ {
+				next, err := solveTSPFrom(matrix, city, routeLogger)
+				if err != nil {
+					log.Fatal(err)
+				}
+				result.Duration += next.Duration
+				result.RoutesEvaluated += next.RoutesEvaluated
+				result.EdgesEvaluated += next.EdgesEvaluated
+				if next.BestCost < result.BestCost {
+					result.BestCost, result.BestRoute = next.BestCost, next.BestRoute
+				}
+				logger.Printf("n=%d | origem %d/%d concluída", n, city+1, n)
+			}
+		}
 		expected := factorial(uint64(n - 1))
+		if *allStarts {
+			expected *= uint64(n)
+		}
 		logger.Printf("n=%d | rotas=%d (teórico=%d) | arestas=%d | custo mínimo=%d | rota=%s | tempo=%s",
 			result.N, result.RoutesEvaluated, expected, result.EdgesEvaluated,
 			result.BestCost, formatRoute(result.BestRoute), result.Duration)
-		if result.RoutesEvaluated != expected {
+		if result.RoutesEvaluated != expected || result.EdgesEvaluated != expected*uint64(n) {
 			logger.Fatalf("contagem incorreta de rotas para n=%d: esperado %d, obtido %d", n, expected, result.RoutesEvaluated)
 		}
 		row := []string{
