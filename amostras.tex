@@ -1,38 +1,75 @@
 % Gerado por tabela_amostras.py; tempos em milissegundos.
 \subsection{Medições individuais: CPU, origem fixa}
-As letras identificam os arquivos de origem; tempos em milissegundos. Mínimo, mediana e máximo estão arredondados a três algarismos significativos.
-\begin{itemize}
-\item A: \texttt{resultados/resultados.csv}
-\item B: \texttt{resultados/resultados\_3879801335.csv}
-\item C: \texttt{resultados/resultados\_477070715.csv}
-\item D: \texttt{resultados/resultados\_81501847.csv}
-\item E: \texttt{resultados/resultados\_862872379.csv}
-\item F: \texttt{resultados/resultados\_972862127.csv}
-\end{itemize}
-\begin{small}
-\begin{longtable}{r p{5.2cm} r r r}
+Tempos em milissegundos. Cada coluna corresponde a uma execução; o traço indica que não há medição para aquele tamanho.
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{longtable}{rrrrr}
 \toprule
-$n$ & Amostras (arquivo: tempo) & Mín. & Mediana & Máx. \\
+$n$ & A & B & C & D \\
 \midrule\endfirsthead
-\toprule $n$ & Amostras (arquivo: tempo) & Mín. & Mediana & Máx. \\
+\toprule $n$ & A & B & C & D \\
 \midrule\endhead
-3 & A: 0,000630; B: 0,006473; C: 0,005932; D: 0,000701; E: 0,000902; F: 0,000942 & 0.00063 & 0.000922 & 0.00647 \\
-4 & A: 0,003730; B: 0,001112; C: 0,000481; D: 0,000471; E: 0,000582; F: 0,000511 & 0.000471 & 0.000547 & 0.00373 \\
-5 & A: 0,001180; B: 0,002365; C: 0,001683; D: 0,001052; E: 0,001042; F: 0,001183 & 0.00104 & 0.00118 & 0.00236 \\
-6 & A: 0,005430; B: 0,007114; C: 0,007415; D: 0,004709; E: 0,005099; F: 0,005109 & 0.00471 & 0.00527 & 0.00741 \\
-7 & A: 0,048309; B: 0,057766; C: 0,035712; D: 0,026098; E: 0,027983; F: 0,027643 & 0.0261 & 0.0318 & 0.0578 \\
-8 & A: 0,384213; B: 0,793352; C: 0,263428; D: 0,422930; E: 0,197861; F: 0,203407 & 0.198 & 0.324 & 0.793 \\
-9 & A: 3,575375; B: 3,311486; C: 4,599842; D: 2,469023; E: 2,937508; F: 2,379585 & 2.38 & 3.12 & 4.6 \\
-10 & A: 21,730290; B: 23,454852; C: 24,148688; D: 20,703818; E: 20,937891; F: 22,507273 & 20.7 & 22.1 & 24.1 \\
-11 & B: 241,149517; C: 234,589688; D: 220,352922; E: 241,903932; F: 213,259329 & 213 & 235 & 242 \\
-12 & B: 2816,919732; C: 2675,783333; D: 2467,607679; E: 2690,764910; F: 2529,056042 & 2.47e+03 & 2.68e+03 & 2.82e+03 \\
-13 & B: 32885,400771; D: 30599,227790; E: 32980,531361; F: 30787,241502 & 3.06e+04 & 3.18e+04 & 3.3e+04 \\
-14 & B: 450664,889607; D: 419840,804168; E: 444462,081083; F: 421648,064272 & 4.2e+05 & 4.33e+05 & 4.51e+05 \\
-15 & D: 5981114,958103 & 5.98e+06 & 5.98e+06 & 5.98e+06 \\
+3 & 0,000630 & 0,006473 & 0,005932 & 0,000701 \\
+4 & 0,003730 & 0,001112 & 0,000481 & 0,000471 \\
+5 & 0,001180 & 0,002365 & 0,001683 & 0,001052 \\
+6 & 0,005430 & 0,007114 & 0,007415 & 0,004709 \\
+7 & 0,048309 & 0,057766 & 0,035712 & 0,026098 \\
+8 & 0,384213 & 0,793352 & 0,263428 & 0,422930 \\
+9 & 3,575375 & 3,311486 & 4,599842 & 2,469023 \\
+10 & 21,730290 & 23,454852 & 24,148688 & 20,703818 \\
+11 & -- & 241,149517 & 234,589688 & 220,352922 \\
+12 & -- & 2816,919732 & 2675,783333 & 2467,607679 \\
+13 & -- & 32885,400771 & -- & 30599,227790 \\
+14 & -- & 450664,889607 & -- & 419840,804168 \\
+15 & -- & -- & -- & 5981114,958103 \\
 \bottomrule
 \end{longtable}
-\end{small}
-\noindent Contagens efetivamente registradas nos CSVs (rotas e arestas):
+\endgroup
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{longtable}{rrr}
+\toprule
+$n$ & E & F \\
+\midrule\endfirsthead
+\toprule $n$ & E & F \\
+\midrule\endhead
+3 & 0,000902 & 0,000942 \\
+4 & 0,000582 & 0,000511 \\
+5 & 0,001042 & 0,001183 \\
+6 & 0,005099 & 0,005109 \\
+7 & 0,027983 & 0,027643 \\
+8 & 0,197861 & 0,203407 \\
+9 & 2,937508 & 2,379585 \\
+10 & 20,937891 & 22,507273 \\
+11 & 241,903932 & 213,259329 \\
+12 & 2690,764910 & 2529,056042 \\
+13 & 32980,531361 & 30787,241502 \\
+14 & 444462,081083 & 421648,064272 \\
+\bottomrule
+\end{longtable}
+\endgroup
+\noindent Dispersão dos tempos (ms; três algarismos significativos):
+\begin{longtable}{rrrrr}
+\toprule
+$n$ & Amostras & Mínimo & Mediana & Máximo \\
+\midrule\endfirsthead
+\toprule
+$n$ & Amostras & Mínimo & Mediana & Máximo \\
+\midrule\endhead
+3 & 6 & 0.00063 & 0.000922 & 0.00647 \\
+4 & 6 & 0.000471 & 0.000547 & 0.00373 \\
+5 & 6 & 0.00104 & 0.00118 & 0.00236 \\
+6 & 6 & 0.00471 & 0.00527 & 0.00741 \\
+7 & 6 & 0.0261 & 0.0318 & 0.0578 \\
+8 & 6 & 0.198 & 0.324 & 0.793 \\
+9 & 6 & 2.38 & 3.12 & 4.6 \\
+10 & 6 & 20.7 & 22.1 & 24.1 \\
+11 & 5 & 213 & 235 & 242 \\
+12 & 5 & 2.47e+03 & 2.68e+03 & 2.82e+03 \\
+13 & 4 & 3.06e+04 & 3.18e+04 & 3.3e+04 \\
+14 & 4 & 4.2e+05 & 4.33e+05 & 4.51e+05 \\
+15 & 1 & 5.98e+06 & 5.98e+06 & 5.98e+06 \\
+\bottomrule
+\end{longtable}
+\noindent Contagens registradas (rotas e arestas):
 \begin{longtable}{rrr}
 \toprule
 $n$ & Avaliações de rotas & Avaliações de arestas \\
@@ -56,37 +93,58 @@ $n$ & Avaliações de rotas & Avaliações de arestas \\
 \bottomrule
 \end{longtable}
 \subsection{Medições individuais: GPU, origem fixa}
-As letras identificam os arquivos de origem; tempos em milissegundos. Mínimo, mediana e máximo estão arredondados a três algarismos significativos.
-\begin{itemize}
-\item A: \texttt{resultados/results\_gpu.csv}
-\item B: \texttt{resultados/results\_gpu\_2372117759.csv}
-\end{itemize}
-\begin{small}
-\begin{longtable}{r p{5.2cm} r r r}
+Tempos em milissegundos. Cada coluna corresponde a uma execução; o traço indica que não há medição para aquele tamanho.
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{longtable}{rrr}
 \toprule
-$n$ & Amostras (arquivo: tempo) & Mín. & Mediana & Máx. \\
+$n$ & A & B \\
 \midrule\endfirsthead
-\toprule $n$ & Amostras (arquivo: tempo) & Mín. & Mediana & Máx. \\
+\toprule $n$ & A & B \\
 \midrule\endhead
-3 & A: 161,061415; B: 142,841025 & 143 & 152 & 161 \\
-4 & A: 0,065130; B: 0,357791 & 0.0651 & 0.211 & 0.358 \\
-5 & A: 0,067490; B: 1,408151 & 0.0675 & 0.738 & 1.41 \\
-6 & A: 0,061299; B: 0,635886 & 0.0613 & 0.349 & 0.636 \\
-7 & A: 0,065350; B: 0,302767 & 0.0654 & 0.184 & 0.303 \\
-8 & A: 0,063500; B: 0,503650 & 0.0635 & 0.284 & 0.504 \\
-9 & A: 0,102229; B: 0,355900 & 0.102 & 0.229 & 0.356 \\
-10 & A: 0,568498; B: 0,575293 & 0.568 & 0.572 & 0.575 \\
-11 & A: 3,807393; B: 2,853125 & 2.85 & 3.33 & 3.81 \\
-12 & A: 40,446765; B: 24,476475 & 24.5 & 32.5 & 40.4 \\
-13 & A: 493,333829; B: 311,104639 & 311 & 402 & 493 \\
-14 & A: 7256,399898; B: 4890,258530 & 4.89e+03 & 6.07e+03 & 7.26e+03 \\
-15 & A: 116386,010315; B: 93118,212972 & 9.31e+04 & 1.05e+05 & 1.16e+05 \\
-16 & A: 1622276,604931; B: 1563253,068073 & 1.56e+06 & 1.59e+06 & 1.62e+06 \\
-17 & A: 27074814,512025 & 2.71e+07 & 2.71e+07 & 2.71e+07 \\
+3 & 161,061415 & 142,841025 \\
+4 & 0,065130 & 0,357791 \\
+5 & 0,067490 & 1,408151 \\
+6 & 0,061299 & 0,635886 \\
+7 & 0,065350 & 0,302767 \\
+8 & 0,063500 & 0,503650 \\
+9 & 0,102229 & 0,355900 \\
+10 & 0,568498 & 0,575293 \\
+11 & 3,807393 & 2,853125 \\
+12 & 40,446765 & 24,476475 \\
+13 & 493,333829 & 311,104639 \\
+14 & 7256,399898 & 4890,258530 \\
+15 & 116386,010315 & 93118,212972 \\
+16 & 1622276,604931 & 1563253,068073 \\
+17 & 27074814,512025 & -- \\
 \bottomrule
 \end{longtable}
-\end{small}
-\noindent Contagens efetivamente registradas nos CSVs (rotas e arestas):
+\endgroup
+\noindent Dispersão dos tempos (ms; três algarismos significativos):
+\begin{longtable}{rrrrr}
+\toprule
+$n$ & Amostras & Mínimo & Mediana & Máximo \\
+\midrule\endfirsthead
+\toprule
+$n$ & Amostras & Mínimo & Mediana & Máximo \\
+\midrule\endhead
+3 & 2 & 143 & 152 & 161 \\
+4 & 2 & 0.0651 & 0.211 & 0.358 \\
+5 & 2 & 0.0675 & 0.738 & 1.41 \\
+6 & 2 & 0.0613 & 0.349 & 0.636 \\
+7 & 2 & 0.0654 & 0.184 & 0.303 \\
+8 & 2 & 0.0635 & 0.284 & 0.504 \\
+9 & 2 & 0.102 & 0.229 & 0.356 \\
+10 & 2 & 0.568 & 0.572 & 0.575 \\
+11 & 2 & 2.85 & 3.33 & 3.81 \\
+12 & 2 & 24.5 & 32.5 & 40.4 \\
+13 & 2 & 311 & 402 & 493 \\
+14 & 2 & 4.89e+03 & 6.07e+03 & 7.26e+03 \\
+15 & 2 & 9.31e+04 & 1.05e+05 & 1.16e+05 \\
+16 & 2 & 1.56e+06 & 1.59e+06 & 1.62e+06 \\
+17 & 1 & 2.71e+07 & 2.71e+07 & 2.71e+07 \\
+\bottomrule
+\end{longtable}
+\noindent Contagens registradas (rotas e arestas):
 \begin{longtable}{rrr}
 \toprule
 $n$ & Avaliações de rotas & Avaliações de arestas \\
@@ -109,5 +167,104 @@ $n$ & Avaliações de rotas & Avaliações de arestas \\
 15 & 87178291200 & 1307674368000 \\
 16 & 1307674368000 & 20922789888000 \\
 17 & 20922789888000 & 355687428096000 \\
+\bottomrule
+\end{longtable}
+\subsection{Medições individuais: CPU, todas as origens}
+Tempos em milissegundos. Cada coluna corresponde a uma execução; o traço indica que não há medição para aquele tamanho.
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{longtable}{rrrrr}
+\toprule
+$n$ & A & B & C & D \\
+\midrule\endfirsthead
+\toprule $n$ & A & B & C & D \\
+\midrule\endhead
+4 & 0,008351 & 0,010319 & -- & 0,012271 \\
+5 & 0,014735 & 0,017781 & -- & 0,046310 \\
+6 & 0,084926 & 0,151294 & -- & 0,187042 \\
+7 & 0,537665 & 0,882772 & -- & 1,052807 \\
+8 & 4,486224 & 7,562803 & -- & 12,416778 \\
+9 & 34,449002 & 54,860108 & -- & 71,813808 \\
+10 & 461,714364 & -- & -- & 749,880140 \\
+11 & 4772,838389 & -- & -- & 8703,860762 \\
+12 & 63138,217306 & -- & 73979,988669 & -- \\
+\bottomrule
+\end{longtable}
+\endgroup
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{longtable}{rrrrr}
+\toprule
+$n$ & E & F & G & H \\
+\midrule\endfirsthead
+\toprule $n$ & E & F & G & H \\
+\midrule\endhead
+4 & 0,010425 & 0,009403 & 0,011913 & 0,011763 \\
+5 & 0,035964 & 0,018698 & 0,038576 & 0,038172 \\
+6 & 0,175412 & 0,139499 & 0,156110 & 0,165718 \\
+7 & 0,929429 & 0,899237 & 1,023187 & 1,112638 \\
+8 & 6,237841 & 12,228080 & 9,509803 & 8,808975 \\
+9 & 60,551169 & 48,536747 & 60,727494 & 59,518269 \\
+10 & 917,776069 & -- & 715,030039 & 707,644363 \\
+11 & -- & -- & 6426,228867 & -- \\
+\bottomrule
+\end{longtable}
+\endgroup
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{longtable}{rrrrr}
+\toprule
+$n$ & I & J & K & L \\
+\midrule\endfirsthead
+\toprule $n$ & I & J & K & L \\
+\midrule\endhead
+4 & 0,005236 & 0,004597 & 0,008692 & 0,011325 \\
+5 & 0,017003 & 0,013791 & 0,022244 & 0,027418 \\
+6 & 0,095747 & 0,056287 & 0,082597 & 0,330597 \\
+7 & 0,640153 & 0,398442 & 0,545165 & 0,612495 \\
+8 & 5,612293 & 4,021640 & 4,470285 & 5,237100 \\
+9 & 40,196038 & 31,860192 & 37,573067 & 46,067216 \\
+10 & 417,484334 & 450,866226 & 464,730022 & 493,659598 \\
+11 & 5994,823967 & 4863,752327 & 4937,410892 & 5258,574811 \\
+12 & 76028,134951 & 58008,567679 & 64345,283848 & 57669,253561 \\
+13 & -- & 700746,492811 & -- & -- \\
+\bottomrule
+\end{longtable}
+\endgroup
+\noindent Dispersão dos tempos (ms; três algarismos significativos):
+\begin{longtable}{rrrrr}
+\toprule
+$n$ & Amostras & Mínimo & Mediana & Máximo \\
+\midrule\endfirsthead
+\toprule
+$n$ & Amostras & Mínimo & Mediana & Máximo \\
+\midrule\endhead
+4 & 11 & 0.0046 & 0.0103 & 0.0123 \\
+5 & 11 & 0.0138 & 0.0222 & 0.0463 \\
+6 & 11 & 0.0563 & 0.151 & 0.331 \\
+7 & 11 & 0.398 & 0.883 & 1.11 \\
+8 & 11 & 4.02 & 6.24 & 12.4 \\
+9 & 11 & 31.9 & 48.5 & 71.8 \\
+10 & 9 & 417 & 494 & 918 \\
+11 & 7 & 4.77e+03 & 5.26e+03 & 8.7e+03 \\
+12 & 6 & 5.77e+04 & 6.37e+04 & 7.6e+04 \\
+13 & 1 & 7.01e+05 & 7.01e+05 & 7.01e+05 \\
+\bottomrule
+\end{longtable}
+\noindent Contagens registradas (rotas e arestas):
+\begin{longtable}{rrr}
+\toprule
+$n$ & Avaliações de rotas & Avaliações de arestas \\
+\midrule\endfirsthead
+\toprule
+$n$ & Avaliações de rotas & Avaliações de arestas \\
+\midrule\endhead
+4 & 24 & 96 \\
+5 & 120 & 600 \\
+6 & 720 & 4320 \\
+7 & 5040 & 35280 \\
+8 & 40320 & 322560 \\
+9 & 362880 & 3265920 \\
+10 & 3628800 & 36288000 \\
+11 & 39916800 & 439084800 \\
+12 & 479001600 & 5748019200 \\
+13 & 6227020800 & 80951270400 \\
 \bottomrule
 \end{longtable}

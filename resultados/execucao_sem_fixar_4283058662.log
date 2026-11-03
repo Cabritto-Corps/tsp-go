@@ -1,0 +1,16 @@
+2026/11/03 12:02:40 TSP por força bruta | todas as origens: true | origem aleatória: false | semente dos custos: 42 | max-n: 12
+2026/11/03 12:02:40 Resultados serão gravados em resultados
+2026/11/03 12:02:45 n=12 | origem 1/12 concluída
+2026/11/03 12:02:51 n=12 | origem 2/12 concluída
+2026/11/03 12:02:57 n=12 | origem 3/12 concluída
+2026/11/03 12:03:02 n=12 | origem 4/12 concluída
+2026/11/03 12:03:08 n=12 | origem 5/12 concluída
+2026/11/03 12:03:13 n=12 | origem 6/12 concluída
+2026/11/03 12:03:25 n=12 | origem 7/12 concluída
+2026/11/03 12:03:32 n=12 | origem 8/12 concluída
+2026/11/03 12:03:39 n=12 | origem 9/12 concluída
+2026/11/03 12:03:44 n=12 | origem 10/12 concluída
+2026/11/03 12:03:49 n=12 | origem 11/12 concluída
+2026/11/03 12:03:54 n=12 | origem 12/12 concluída
+2026/11/03 12:03:54 n=12 | rotas=479001600 (teórico=479001600) | arestas=5748019200 | custo mínimo=131 | rota=1 -> 2 -> 11 -> 3 -> 9 -> 10 -> 8 -> 4 -> 6 -> 7 -> 5 -> 12 -> 1 | tempo=1m13.979988669s
+2026/11/03 12:03:54 Benchmark concluído. Arquivos: resultados/execucao_sem_fixar_4283058662.log e resultados/sem_fixar_cpu_1317493460.csv

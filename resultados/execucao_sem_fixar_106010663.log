@@ -1,0 +1,48 @@
+2026/11/03 12:07:51 TSP por força bruta | todas as origens: true | origem aleatória: false | semente dos custos: 42 | max-n: 9
+2026/11/03 12:07:51 Resultados serão gravados em resultados
+2026/11/03 12:07:51 n=4 | origem 1/4 concluída
+2026/11/03 12:07:51 n=4 | origem 2/4 concluída
+2026/11/03 12:07:51 n=4 | origem 3/4 concluída
+2026/11/03 12:07:51 n=4 | origem 4/4 concluída
+2026/11/03 12:07:51 n=4 | rotas=24 (teórico=24) | arestas=96 | custo mínimo=158 | rota=1 -> 2 -> 3 -> 4 -> 1 | tempo=10.319µs
+2026/11/03 12:07:51 n=5 | origem 1/5 concluída
+2026/11/03 12:07:51 n=5 | origem 2/5 concluída
+2026/11/03 12:07:51 n=5 | origem 3/5 concluída
+2026/11/03 12:07:51 n=5 | origem 4/5 concluída
+2026/11/03 12:07:51 n=5 | origem 5/5 concluída
+2026/11/03 12:07:51 n=5 | rotas=120 (teórico=120) | arestas=600 | custo mínimo=175 | rota=1 -> 2 -> 3 -> 4 -> 5 -> 1 | tempo=17.781µs
+2026/11/03 12:07:51 n=6 | origem 1/6 concluída
+2026/11/03 12:07:51 n=6 | origem 2/6 concluída
+2026/11/03 12:07:51 n=6 | origem 3/6 concluída
+2026/11/03 12:07:51 n=6 | origem 4/6 concluída
+2026/11/03 12:07:51 n=6 | origem 5/6 concluída
+2026/11/03 12:07:51 n=6 | origem 6/6 concluída
+2026/11/03 12:07:51 n=6 | rotas=720 (teórico=720) | arestas=4320 | custo mínimo=144 | rota=1 -> 2 -> 3 -> 6 -> 5 -> 4 -> 1 | tempo=151.294µs
+2026/11/03 12:07:51 n=7 | origem 1/7 concluída
+2026/11/03 12:07:51 n=7 | origem 2/7 concluída
+2026/11/03 12:07:51 n=7 | origem 3/7 concluída
+2026/11/03 12:07:51 n=7 | origem 4/7 concluída
+2026/11/03 12:07:51 n=7 | origem 5/7 concluída
+2026/11/03 12:07:51 n=7 | origem 6/7 concluída
+2026/11/03 12:07:51 n=7 | origem 7/7 concluída
+2026/11/03 12:07:51 n=7 | rotas=5040 (teórico=5040) | arestas=35280 | custo mínimo=157 | rota=1 -> 2 -> 7 -> 5 -> 4 -> 3 -> 6 -> 1 | tempo=882.772µs
+2026/11/03 12:07:51 n=8 | origem 1/8 concluída
+2026/11/03 12:07:51 n=8 | origem 2/8 concluída
+2026/11/03 12:07:51 n=8 | origem 3/8 concluída
+2026/11/03 12:07:51 n=8 | origem 4/8 concluída
+2026/11/03 12:07:51 n=8 | origem 5/8 concluída
+2026/11/03 12:07:51 n=8 | origem 6/8 concluída
+2026/11/03 12:07:51 n=8 | origem 7/8 concluída
+2026/11/03 12:07:51 n=8 | origem 8/8 concluída
+2026/11/03 12:07:51 n=8 | rotas=40320 (teórico=40320) | arestas=322560 | custo mínimo=147 | rota=1 -> 2 -> 4 -> 5 -> 7 -> 8 -> 3 -> 6 -> 1 | tempo=7.562803ms
+2026/11/03 12:07:51 n=9 | origem 1/9 concluída
+2026/11/03 12:07:51 n=9 | origem 2/9 concluída
+2026/11/03 12:07:51 n=9 | origem 3/9 concluída
+2026/11/03 12:07:51 n=9 | origem 4/9 concluída
+2026/11/03 12:07:51 n=9 | origem 5/9 concluída
+2026/11/03 12:07:51 n=9 | origem 6/9 concluída
+2026/11/03 12:07:51 n=9 | origem 7/9 concluída
+2026/11/03 12:07:51 n=9 | origem 8/9 concluída
+2026/11/03 12:07:51 n=9 | origem 9/9 concluída
+2026/11/03 12:07:51 n=9 | rotas=362880 (teórico=362880) | arestas=3265920 | custo mínimo=187 | rota=1 -> 2 -> 7 -> 9 -> 6 -> 3 -> 8 -> 5 -> 4 -> 1 | tempo=54.860108ms
+2026/11/03 12:07:51 Benchmark concluído. Arquivos: resultados/execucao_sem_fixar_106010663.log e resultados/sem_fixar_cpu_1081949115.csv

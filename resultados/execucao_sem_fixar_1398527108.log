@@ -1,0 +1,83 @@
+2026/11/03 12:05:34 TSP por força bruta | todas as origens: true | origem aleatória: false | semente dos custos: 42 | max-n: 14
+2026/11/03 12:05:34 Resultados serão gravados em resultados
+2026/11/03 12:05:34 n=4 | origem 1/4 concluída
+2026/11/03 12:05:34 n=4 | origem 2/4 concluída
+2026/11/03 12:05:34 n=4 | origem 3/4 concluída
+2026/11/03 12:05:34 n=4 | origem 4/4 concluída
+2026/11/03 12:05:34 n=4 | rotas=24 (teórico=24) | arestas=96 | custo mínimo=166 | rota=1 -> 2 -> 3 -> 4 -> 1 | tempo=5.236µs
+2026/11/03 12:05:34 n=5 | origem 1/5 concluída
+2026/11/03 12:05:34 n=5 | origem 2/5 concluída
+2026/11/03 12:05:34 n=5 | origem 3/5 concluída
+2026/11/03 12:05:34 n=5 | origem 4/5 concluída
+2026/11/03 12:05:34 n=5 | origem 5/5 concluída
+2026/11/03 12:05:34 n=5 | rotas=120 (teórico=120) | arestas=600 | custo mínimo=175 | rota=1 -> 2 -> 4 -> 3 -> 5 -> 1 | tempo=17.003µs
+2026/11/03 12:05:34 n=6 | origem 1/6 concluída
+2026/11/03 12:05:34 n=6 | origem 2/6 concluída
+2026/11/03 12:05:34 n=6 | origem 3/6 concluída
+2026/11/03 12:05:34 n=6 | origem 4/6 concluída
+2026/11/03 12:05:34 n=6 | origem 5/6 concluída
+2026/11/03 12:05:34 n=6 | origem 6/6 concluída
+2026/11/03 12:05:34 n=6 | rotas=720 (teórico=720) | arestas=4320 | custo mínimo=181 | rota=1 -> 2 -> 4 -> 5 -> 3 -> 6 -> 1 | tempo=95.747µs
+2026/11/03 12:05:34 n=7 | origem 1/7 concluída
+2026/11/03 12:05:34 n=7 | origem 2/7 concluída
+2026/11/03 12:05:34 n=7 | origem 3/7 concluída
+2026/11/03 12:05:34 n=7 | origem 4/7 concluída
+2026/11/03 12:05:34 n=7 | origem 5/7 concluída
+2026/11/03 12:05:34 n=7 | origem 6/7 concluída
+2026/11/03 12:05:34 n=7 | origem 7/7 concluída
+2026/11/03 12:05:34 n=7 | rotas=5040 (teórico=5040) | arestas=35280 | custo mínimo=186 | rota=1 -> 2 -> 7 -> 3 -> 5 -> 4 -> 6 -> 1 | tempo=640.153µs
+2026/11/03 12:05:34 n=8 | origem 1/8 concluída
+2026/11/03 12:05:34 n=8 | origem 2/8 concluída
+2026/11/03 12:05:34 n=8 | origem 3/8 concluída
+2026/11/03 12:05:34 n=8 | origem 4/8 concluída
+2026/11/03 12:05:34 n=8 | origem 5/8 concluída
+2026/11/03 12:05:34 n=8 | origem 6/8 concluída
+2026/11/03 12:05:34 n=8 | origem 7/8 concluída
+2026/11/03 12:05:34 n=8 | origem 8/8 concluída
+2026/11/03 12:05:34 n=8 | rotas=40320 (teórico=40320) | arestas=322560 | custo mínimo=149 | rota=1 -> 2 -> 7 -> 3 -> 5 -> 8 -> 4 -> 6 -> 1 | tempo=5.612293ms
+2026/11/03 12:05:34 n=9 | origem 1/9 concluída
+2026/11/03 12:05:34 n=9 | origem 2/9 concluída
+2026/11/03 12:05:34 n=9 | origem 3/9 concluída
+2026/11/03 12:05:34 n=9 | origem 4/9 concluída
+2026/11/03 12:05:34 n=9 | origem 5/9 concluída
+2026/11/03 12:05:34 n=9 | origem 6/9 concluída
+2026/11/03 12:05:34 n=9 | origem 7/9 concluída
+2026/11/03 12:05:34 n=9 | origem 8/9 concluída
+2026/11/03 12:05:34 n=9 | origem 9/9 concluída
+2026/11/03 12:05:34 n=9 | rotas=362880 (teórico=362880) | arestas=3265920 | custo mínimo=119 | rota=1 -> 2 -> 7 -> 3 -> 5 -> 8 -> 4 -> 9 -> 6 -> 1 | tempo=40.196038ms
+2026/11/03 12:05:34 n=10 | origem 1/10 concluída
+2026/11/03 12:05:34 n=10 | origem 2/10 concluída
+2026/11/03 12:05:34 n=10 | origem 3/10 concluída
+2026/11/03 12:05:34 n=10 | origem 4/10 concluída
+2026/11/03 12:05:34 n=10 | origem 5/10 concluída
+2026/11/03 12:05:34 n=10 | origem 6/10 concluída
+2026/11/03 12:05:34 n=10 | origem 7/10 concluída
+2026/11/03 12:05:34 n=10 | origem 8/10 concluída
+2026/11/03 12:05:34 n=10 | origem 9/10 concluída
+2026/11/03 12:05:34 n=10 | origem 10/10 concluída
+2026/11/03 12:05:34 n=10 | rotas=3628800 (teórico=3628800) | arestas=36288000 | custo mínimo=153 | rota=1 -> 2 -> 7 -> 4 -> 8 -> 5 -> 3 -> 10 -> 9 -> 6 -> 1 | tempo=417.484334ms
+2026/11/03 12:05:35 n=11 | origem 1/11 concluída
+2026/11/03 12:05:35 n=11 | origem 2/11 concluída
+2026/11/03 12:05:36 n=11 | origem 3/11 concluída
+2026/11/03 12:05:36 n=11 | origem 4/11 concluída
+2026/11/03 12:05:37 n=11 | origem 5/11 concluída
+2026/11/03 12:05:37 n=11 | origem 6/11 concluída
+2026/11/03 12:05:38 n=11 | origem 7/11 concluída
+2026/11/03 12:05:39 n=11 | origem 8/11 concluída
+2026/11/03 12:05:39 n=11 | origem 9/11 concluída
+2026/11/03 12:05:40 n=11 | origem 10/11 concluída
+2026/11/03 12:05:40 n=11 | origem 11/11 concluída
+2026/11/03 12:05:40 n=11 | rotas=39916800 (teórico=39916800) | arestas=439084800 | custo mínimo=134 | rota=1 -> 2 -> 7 -> 3 -> 5 -> 8 -> 4 -> 11 -> 10 -> 9 -> 6 -> 1 | tempo=5.994823967s
+2026/11/03 12:05:47 n=12 | origem 1/12 concluída
+2026/11/03 12:05:54 n=12 | origem 2/12 concluída
+2026/11/03 12:06:00 n=12 | origem 3/12 concluída
+2026/11/03 12:06:06 n=12 | origem 4/12 concluída
+2026/11/03 12:06:13 n=12 | origem 5/12 concluída
+2026/11/03 12:06:18 n=12 | origem 6/12 concluída
+2026/11/03 12:06:24 n=12 | origem 7/12 concluída
+2026/11/03 12:06:32 n=12 | origem 8/12 concluída
+2026/11/03 12:06:38 n=12 | origem 9/12 concluída
+2026/11/03 12:06:45 n=12 | origem 10/12 concluída
+2026/11/03 12:06:50 n=12 | origem 11/12 concluída
+2026/11/03 12:06:56 n=12 | origem 12/12 concluída
+2026/11/03 12:06:56 n=12 | rotas=479001600 (teórico=479001600) | arestas=5748019200 | custo mínimo=141 | rota=1 -> 2 -> 7 -> 3 -> 5 -> 8 -> 4 -> 11 -> 10 -> 9 -> 12 -> 6 -> 1 | tempo=1m16.028134951s

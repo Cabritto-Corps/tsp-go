@@ -41,28 +41,37 @@ def main():
             continue
         linhas += [
             rf"\subsection{{Medições individuais: {dispositivo}}}",
-            "As letras identificam os arquivos de origem; tempos em milissegundos. Mínimo, mediana e máximo estão arredondados a três algarismos significativos.",
-            r"\begin{itemize}",
+            "Tempos em milissegundos. Cada coluna corresponde a uma execução; "
+            "o traço indica que não há medição para aquele tamanho.",
         ]
-        for indice, caminho in enumerate(arquivos, 1):
-            nome = caminho.replace("_", r"\_")
-            linhas.append(rf"\item {chr(64 + indice)}: \texttt{{{nome}}}")
-        linhas += [
-            r"\end{itemize}",
-            r"\begin{small}",
-            r"\begin{longtable}{r p{5.2cm} r r r}",
-            r"\toprule",
-            r"$n$ & Amostras (arquivo: tempo) & Mín. & Mediana & Máx. \\",
-            r"\midrule\endfirsthead",
-            r"\toprule $n$ & Amostras (arquivo: tempo) & Mín. & Mediana & Máx. \\",
-            r"\midrule\endhead",
-        ]
+        for inicio in range(1, len(arquivos) + 1, 4):
+            indices = list(range(inicio, min(inicio + 4, len(arquivos) + 1)))
+            cabecalho = " & ".join(chr(64 + i) for i in indices)
+            linhas += [
+                r"\begingroup\small\setlength{\tabcolsep}{4pt}",
+                r"\begin{longtable}{r" + "r" * len(indices) + "}",
+                r"\toprule", "$n$ & " + cabecalho + r" \\",
+                r"\midrule\endfirsthead",
+                r"\toprule $n$ & " + cabecalho + r" \\",
+                r"\midrule\endhead",
+            ]
+            for n, valores in sorted(amostras.items()):
+                por_arquivo = dict(valores)
+                detalhes = [numero(por_arquivo[i]) if i in por_arquivo else "--" for i in indices]
+                if any(i in por_arquivo for i in indices):
+                    linhas.append(f"{n} & " + " & ".join(detalhes) + r" \\")
+            linhas += [r"\bottomrule", r"\end{longtable}", r"\endgroup"]
+        linhas += [r"\noindent Dispersão dos tempos (ms; três algarismos significativos):",
+                   r"\begin{longtable}{rrrrr}", r"\toprule",
+                   r"$n$ & Amostras & Mínimo & Mediana & Máximo \\",
+                   r"\midrule\endfirsthead", r"\toprule",
+                   r"$n$ & Amostras & Mínimo & Mediana & Máximo \\",
+                   r"\midrule\endhead"]
         for n, valores in sorted(amostras.items()):
             tempos = [valor for _, valor in valores]
-            detalhes = "; ".join(f"{chr(64 + indice)}: {numero(valor)}" for indice, valor in valores)
-            linhas.append(rf"{n} & {detalhes} & {min(tempos):.3g} & {statistics.median(tempos):.3g} & {max(tempos):.3g} \\")
-        linhas += [r"\bottomrule", r"\end{longtable}", r"\end{small}"]
-        linhas += [r"\noindent Contagens efetivamente registradas nos CSVs (rotas e arestas):",
+            linhas.append(rf"{n} & {len(tempos)} & {min(tempos):.3g} & {statistics.median(tempos):.3g} & {max(tempos):.3g} \\")
+        linhas += [r"\bottomrule", r"\end{longtable}"]
+        linhas += [r"\noindent Contagens registradas (rotas e arestas):",
                    r"\begin{longtable}{rrr}", r"\toprule",
                    r"$n$ & Avaliações de rotas & Avaliações de arestas \\",
                    r"\midrule\endfirsthead", r"\toprule",

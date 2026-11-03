@@ -1,0 +1,2 @@
+cidades,rotas_teoricas,rotas_avaliadas,arestas_avaliadas,custo_minimo,rota_otima,tempo_ns,tempo_ms
+12,479001600,479001600,5748019200,131,1 -> 2 -> 11 -> 3 -> 9 -> 10 -> 8 -> 4 -> 6 -> 7 -> 5 -> 12 -> 1,73979988669,73979.988669
