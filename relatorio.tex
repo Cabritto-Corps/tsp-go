@@ -111,7 +111,13 @@ make run-random ARGS="-min-n 3 -max-n 8 -seed 42"
 \end{verbatim}
 No primeiro caso, a origem permanece fixa. No segundo, apesar do nome do comando, a busca é executada a partir de todas as cidades, enumerando também as rotações redundantes. A comparação correspondente aparece na Seção~\ref{sec:reducao}.
 
-Também foram realizadas execuções sequenciais sem fixação, com origem em cada uma das cidades, usando semente 42 e limites máximos de entrada variados. Para cada tamanho, o tempo corresponde à soma dos tempos das buscas individuais a partir de cada origem. Uma execução interrompida contribui apenas com os tamanhos já concluídos. Como o tamanho máximo influencia a matriz gerada, as amostras de um mesmo $n$ não necessariamente correspondem à mesma instância. As medianas resumem os tempos observados nessas condições, e não repetidas medições necessariamente da mesma matriz.
+A execução GPU sem fixação foi realizada com:
+\begin{verbatim}
+make gurun-random ARGS="-min-n 3 -max-n 15 -seed 42"
+\end{verbatim}
+O tempo reportado soma as buscas para todas as origens e inclui as duas passagens CUDA em cada origem.
+
+Também foram realizadas execuções sequenciais sem fixação, com origem em cada uma das cidades, usando semente 42 e limites máximos de entrada variados. Para cada tamanho, o tempo corresponde à soma dos tempos das buscas individuais a partir de cada origem. Uma execução interrompida contribui apenas com os tamanhos já concluídos. Como o tamanho máximo influencia a matriz gerada, as amostras de um mesmo $n$ não necessariamente correspondem à mesma instância. As medianas resumem os tempos observados nessas condições, e não repetidas medições necessariamente da mesma matriz. Para a GPU sem fixação, há uma execução concluída para cada $n$ de 3 a 15, com semente 42 e tamanho máximo 15; portanto, esses tempos são observações individuais, não medianas de repetições.
 
 \section{Resultados e validação}
 
@@ -350,6 +356,40 @@ Para $n=13$, a única execução concluiu em aproximadamente 11 min 41 s e encon
 \includegraphics[width=\linewidth]{grafricos/CPU_todas_origens.png}
 \caption{Tempos observados na CPU para todas as origens; a faixa mostra o mínimo e o máximo.}
 \label{fig:cpu-todas-origens}
+\end{figure}
+
+\subsection{Medições na GPU sem fixar a origem}
+
+Foi concluída uma execução para cada tamanho de $n=3$ a $n=15$, enumerando todas as cidades iniciais. Os contadores confirmaram $2n!$ avaliações de rotas e $2n\cdot n!$ avaliações de arestas, pois, para cada origem, a GPU percorre todas as rotas em duas passagens. A Tabela~\ref{tab:gpu-sem-fixacao} apresenta os tempos observados; como há uma amostra por tamanho, não se calculou mediana nem dispersão.
+\begin{longtable}{rrrrr}
+\caption{Resultados observados na GPU com todas as origens.}\label{tab:gpu-sem-fixacao}\\
+\toprule
+$n$ & Rotas avaliadas & Arestas avaliadas & Custo mínimo & Tempo (ms) \\
+\midrule\endfirsthead
+\toprule $n$ & Rotas avaliadas & Arestas avaliadas & Custo mínimo & Tempo (ms) \\
+\midrule\endhead
+3 & 12 & 36 & 147 & 527,580 \\
+4 & 48 & 192 & 148 & 0,849 \\
+5 & 240 & 1.200 & 138 & 1,018 \\
+6 & 1.440 & 8.640 & 123 & 1,306 \\
+7 & 10.080 & 70.560 & 162 & 1,473 \\
+8 & 80.640 & 645.120 & 117 & 1,903 \\
+9 & 725.760 & 6.531.840 & 128 & 2,452 \\
+10 & 7.257.600 & 72.576.000 & 146 & 6,811 \\
+11 & 79.833.600 & 878.169.600 & 165 & 21,956 \\
+12 & 958.003.200 & 11.496.038.400 & 191 & 237,261 \\
+13 & 12.454.041.600 & 161.902.540.800 & 171 & 3.544,673 \\
+14 & 174.356.582.400 & 2.440.992.153.600 & 146 & 59.721,629 \\
+15 & 2.615.348.736.000 & 39.230.231.040.000 & 124 & 1.242.212,633 \\
+\bottomrule
+\end{longtable}
+No maior caso, $n=15$, o tempo foi de aproximadamente 20 min 42 s, com custo mínimo 124 e rota $1\to2\to8\to10\to3\to9\to6\to11\to4\to5\to13\to12\to15\to7\to14\to1$. O tempo elevado em $n=3$ reflete custos fixos de inicialização e transferência, que dominam o cálculo para uma entrada tão pequena. A execução foi feita em computador diferente dos benchmarks de CPU; portanto, não deve ser usada para concluir uma razão de desempenho entre os dispositivos.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\linewidth]{grafricos/GPU_todas_origens.png}
+\caption{Tempos observados na GPU sem fixar a origem; uma execução por tamanho.}
+\label{fig:gpu-todas-origens}
 \end{figure}
 
 \subsection{Custo de avaliação por rota}

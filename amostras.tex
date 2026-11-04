@@ -268,3 +268,74 @@ $n$ & Avaliações de rotas & Avaliações de arestas \\
 13 & 6227020800 & 80951270400 \\
 \bottomrule
 \end{longtable}
+\subsection{Medições individuais: GPU, todas as origens}
+Tempos em milissegundos. Cada coluna corresponde a uma execução; o traço indica que não há medição para aquele tamanho.
+\begingroup\small\setlength{\tabcolsep}{4pt}
+\begin{longtable}{rr}
+\toprule
+$n$ & A \\
+\midrule\endfirsthead
+\toprule $n$ & A \\
+\midrule\endhead
+3 & 527,579584 \\
+4 & 0,849258 \\
+5 & 1,017895 \\
+6 & 1,305875 \\
+7 & 1,472994 \\
+8 & 1,903404 \\
+9 & 2,452237 \\
+10 & 6,811286 \\
+11 & 21,956486 \\
+12 & 237,261101 \\
+13 & 3544,673141 \\
+14 & 59721,629029 \\
+15 & 1242212,633324 \\
+\bottomrule
+\end{longtable}
+\endgroup
+\noindent Dispersão dos tempos (ms; três algarismos significativos):
+\begin{longtable}{rrrrr}
+\toprule
+$n$ & Amostras & Mínimo & Mediana & Máximo \\
+\midrule\endfirsthead
+\toprule
+$n$ & Amostras & Mínimo & Mediana & Máximo \\
+\midrule\endhead
+3 & 1 & 528 & 528 & 528 \\
+4 & 1 & 0.849 & 0.849 & 0.849 \\
+5 & 1 & 1.02 & 1.02 & 1.02 \\
+6 & 1 & 1.31 & 1.31 & 1.31 \\
+7 & 1 & 1.47 & 1.47 & 1.47 \\
+8 & 1 & 1.9 & 1.9 & 1.9 \\
+9 & 1 & 2.45 & 2.45 & 2.45 \\
+10 & 1 & 6.81 & 6.81 & 6.81 \\
+11 & 1 & 22 & 22 & 22 \\
+12 & 1 & 237 & 237 & 237 \\
+13 & 1 & 3.54e+03 & 3.54e+03 & 3.54e+03 \\
+14 & 1 & 5.97e+04 & 5.97e+04 & 5.97e+04 \\
+15 & 1 & 1.24e+06 & 1.24e+06 & 1.24e+06 \\
+\bottomrule
+\end{longtable}
+\noindent Contagens registradas (rotas e arestas):
+\begin{longtable}{rrr}
+\toprule
+$n$ & Avaliações de rotas & Avaliações de arestas \\
+\midrule\endfirsthead
+\toprule
+$n$ & Avaliações de rotas & Avaliações de arestas \\
+\midrule\endhead
+3 & 12 & 36 \\
+4 & 48 & 192 \\
+5 & 240 & 1200 \\
+6 & 1440 & 8640 \\
+7 & 10080 & 70560 \\
+8 & 80640 & 645120 \\
+9 & 725760 & 6531840 \\
+10 & 7257600 & 72576000 \\
+11 & 79833600 & 878169600 \\
+12 & 958003200 & 11496038400 \\
+13 & 12454041600 & 161902540800 \\
+14 & 174356582400 & 2440992153600 \\
+15 & 2615348736000 & 39230231040000 \\
+\bottomrule
+\end{longtable}
