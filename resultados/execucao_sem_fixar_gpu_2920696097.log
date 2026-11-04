@@ -1,0 +1,134 @@
+2026/11/03 21:42:14 TSP por força bruta (GPU) | todas as origens: true | origem aleatória: false | semente dos custos: 42 | max-n: 15
+2026/11/03 21:42:14 Resultados serão gravados em resultados
+2026/11/03 21:42:14 As contagens incluem as duas passagens; cada rota é reavaliada para recuperar a rota ótima.
+2026/11/03 21:42:14 n=3 | origem 1/3 concluída
+2026/11/03 21:42:14 n=3 | origem 2/3 concluída
+2026/11/03 21:42:14 n=3 | origem 3/3 concluída
+2026/11/03 21:42:14 n=3 | avaliações de rotas=12 (teórico em duas passagens=12) | arestas=36 | custo mínimo=147 | rota=1 -> 2 -> 3 -> 1 | tempo=527.579584ms
+2026/11/03 21:42:14 n=4 | origem 1/4 concluída
+2026/11/03 21:42:14 n=4 | origem 2/4 concluída
+2026/11/03 21:42:14 n=4 | origem 3/4 concluída
+2026/11/03 21:42:14 n=4 | origem 4/4 concluída
+2026/11/03 21:42:14 n=4 | avaliações de rotas=48 (teórico em duas passagens=48) | arestas=192 | custo mínimo=148 | rota=1 -> 2 -> 3 -> 4 -> 1 | tempo=849.258µs
+2026/11/03 21:42:14 n=5 | origem 1/5 concluída
+2026/11/03 21:42:14 n=5 | origem 2/5 concluída
+2026/11/03 21:42:14 n=5 | origem 3/5 concluída
+2026/11/03 21:42:14 n=5 | origem 4/5 concluída
+2026/11/03 21:42:14 n=5 | origem 5/5 concluída
+2026/11/03 21:42:14 n=5 | avaliações de rotas=240 (teórico em duas passagens=240) | arestas=1200 | custo mínimo=138 | rota=1 -> 2 -> 3 -> 4 -> 5 -> 1 | tempo=1.017895ms
+2026/11/03 21:42:14 n=6 | origem 1/6 concluída
+2026/11/03 21:42:14 n=6 | origem 2/6 concluída
+2026/11/03 21:42:14 n=6 | origem 3/6 concluída
+2026/11/03 21:42:14 n=6 | origem 4/6 concluída
+2026/11/03 21:42:14 n=6 | origem 5/6 concluída
+2026/11/03 21:42:14 n=6 | origem 6/6 concluída
+2026/11/03 21:42:14 n=6 | avaliações de rotas=1440 (teórico em duas passagens=1440) | arestas=8640 | custo mínimo=123 | rota=1 -> 2 -> 6 -> 4 -> 3 -> 5 -> 1 | tempo=1.305875ms
+2026/11/03 21:42:14 n=7 | origem 1/7 concluída
+2026/11/03 21:42:14 n=7 | origem 2/7 concluída
+2026/11/03 21:42:14 n=7 | origem 3/7 concluída
+2026/11/03 21:42:14 n=7 | origem 4/7 concluída
+2026/11/03 21:42:14 n=7 | origem 5/7 concluída
+2026/11/03 21:42:14 n=7 | origem 6/7 concluída
+2026/11/03 21:42:14 n=7 | origem 7/7 concluída
+2026/11/03 21:42:14 n=7 | avaliações de rotas=10080 (teórico em duas passagens=10080) | arestas=70560 | custo mínimo=162 | rota=1 -> 2 -> 3 -> 5 -> 4 -> 6 -> 7 -> 1 | tempo=1.472994ms
+2026/11/03 21:42:14 n=8 | origem 1/8 concluída
+2026/11/03 21:42:14 n=8 | origem 2/8 concluída
+2026/11/03 21:42:14 n=8 | origem 3/8 concluída
+2026/11/03 21:42:14 n=8 | origem 4/8 concluída
+2026/11/03 21:42:14 n=8 | origem 5/8 concluída
+2026/11/03 21:42:14 n=8 | origem 6/8 concluída
+2026/11/03 21:42:14 n=8 | origem 7/8 concluída
+2026/11/03 21:42:14 n=8 | origem 8/8 concluída
+2026/11/03 21:42:14 n=8 | avaliações de rotas=80640 (teórico em duas passagens=80640) | arestas=645120 | custo mínimo=117 | rota=1 -> 2 -> 8 -> 3 -> 5 -> 4 -> 6 -> 7 -> 1 | tempo=1.903404ms
+2026/11/03 21:42:14 n=9 | origem 1/9 concluída
+2026/11/03 21:42:14 n=9 | origem 2/9 concluída
+2026/11/03 21:42:14 n=9 | origem 3/9 concluída
+2026/11/03 21:42:14 n=9 | origem 4/9 concluída
+2026/11/03 21:42:14 n=9 | origem 5/9 concluída
+2026/11/03 21:42:14 n=9 | origem 6/9 concluída
+2026/11/03 21:42:14 n=9 | origem 7/9 concluída
+2026/11/03 21:42:14 n=9 | origem 8/9 concluída
+2026/11/03 21:42:14 n=9 | origem 9/9 concluída
+2026/11/03 21:42:14 n=9 | avaliações de rotas=725760 (teórico em duas passagens=725760) | arestas=6531840 | custo mínimo=128 | rota=1 -> 2 -> 8 -> 5 -> 4 -> 3 -> 9 -> 6 -> 7 -> 1 | tempo=2.452237ms
+2026/11/03 21:42:14 n=10 | origem 1/10 concluída
+2026/11/03 21:42:14 n=10 | origem 2/10 concluída
+2026/11/03 21:42:14 n=10 | origem 3/10 concluída
+2026/11/03 21:42:14 n=10 | origem 4/10 concluída
+2026/11/03 21:42:14 n=10 | origem 5/10 concluída
+2026/11/03 21:42:14 n=10 | origem 6/10 concluída
+2026/11/03 21:42:14 n=10 | origem 7/10 concluída
+2026/11/03 21:42:14 n=10 | origem 8/10 concluída
+2026/11/03 21:42:14 n=10 | origem 9/10 concluída
+2026/11/03 21:42:14 n=10 | origem 10/10 concluída
+2026/11/03 21:42:14 n=10 | avaliações de rotas=7257600 (teórico em duas passagens=7257600) | arestas=72576000 | custo mínimo=146 | rota=1 -> 2 -> 7 -> 6 -> 9 -> 3 -> 4 -> 5 -> 8 -> 10 -> 1 | tempo=6.811286ms
+2026/11/03 21:42:14 n=11 | origem 1/11 concluída
+2026/11/03 21:42:14 n=11 | origem 2/11 concluída
+2026/11/03 21:42:14 n=11 | origem 3/11 concluída
+2026/11/03 21:42:14 n=11 | origem 4/11 concluída
+2026/11/03 21:42:14 n=11 | origem 5/11 concluída
+2026/11/03 21:42:14 n=11 | origem 6/11 concluída
+2026/11/03 21:42:14 n=11 | origem 7/11 concluída
+2026/11/03 21:42:14 n=11 | origem 8/11 concluída
+2026/11/03 21:42:14 n=11 | origem 9/11 concluída
+2026/11/03 21:42:14 n=11 | origem 10/11 concluída
+2026/11/03 21:42:14 n=11 | origem 11/11 concluída
+2026/11/03 21:42:14 n=11 | avaliações de rotas=79833600 (teórico em duas passagens=79833600) | arestas=878169600 | custo mínimo=165 | rota=1 -> 2 -> 7 -> 6 -> 9 -> 3 -> 10 -> 8 -> 5 -> 4 -> 11 -> 1 | tempo=21.956486ms
+2026/11/03 21:42:14 n=12 | origem 1/12 concluída
+2026/11/03 21:42:14 n=12 | origem 2/12 concluída
+2026/11/03 21:42:14 n=12 | origem 3/12 concluída
+2026/11/03 21:42:14 n=12 | origem 4/12 concluída
+2026/11/03 21:42:14 n=12 | origem 5/12 concluída
+2026/11/03 21:42:14 n=12 | origem 6/12 concluída
+2026/11/03 21:42:14 n=12 | origem 7/12 concluída
+2026/11/03 21:42:14 n=12 | origem 8/12 concluída
+2026/11/03 21:42:14 n=12 | origem 9/12 concluída
+2026/11/03 21:42:14 n=12 | origem 10/12 concluída
+2026/11/03 21:42:14 n=12 | origem 11/12 concluída
+2026/11/03 21:42:14 n=12 | origem 12/12 concluída
+2026/11/03 21:42:14 n=12 | avaliações de rotas=958003200 (teórico em duas passagens=958003200) | arestas=11496038400 | custo mínimo=191 | rota=1 -> 2 -> 7 -> 6 -> 11 -> 4 -> 5 -> 8 -> 10 -> 3 -> 9 -> 12 -> 1 | tempo=237.261101ms
+2026/11/03 21:42:15 n=13 | origem 1/13 concluída
+2026/11/03 21:42:15 n=13 | origem 2/13 concluída
+2026/11/03 21:42:15 n=13 | origem 3/13 concluída
+2026/11/03 21:42:15 n=13 | origem 4/13 concluída
+2026/11/03 21:42:16 n=13 | origem 5/13 concluída
+2026/11/03 21:42:16 n=13 | origem 6/13 concluída
+2026/11/03 21:42:16 n=13 | origem 7/13 concluída
+2026/11/03 21:42:17 n=13 | origem 8/13 concluída
+2026/11/03 21:42:17 n=13 | origem 9/13 concluída
+2026/11/03 21:42:17 n=13 | origem 10/13 concluída
+2026/11/03 21:42:17 n=13 | origem 11/13 concluída
+2026/11/03 21:42:18 n=13 | origem 12/13 concluída
+2026/11/03 21:42:18 n=13 | origem 13/13 concluída
+2026/11/03 21:42:18 n=13 | avaliações de rotas=12454041600 (teórico em duas passagens=12454041600) | arestas=161902540800 | custo mínimo=171 | rota=1 -> 2 -> 8 -> 10 -> 3 -> 9 -> 12 -> 13 -> 5 -> 4 -> 11 -> 6 -> 7 -> 1 | tempo=3.544673141s
+2026/11/03 21:42:22 n=14 | origem 1/14 concluída
+2026/11/03 21:42:27 n=14 | origem 2/14 concluída
+2026/11/03 21:42:31 n=14 | origem 3/14 concluída
+2026/11/03 21:42:35 n=14 | origem 4/14 concluída
+2026/11/03 21:42:39 n=14 | origem 5/14 concluída
+2026/11/03 21:42:44 n=14 | origem 6/14 concluída
+2026/11/03 21:42:48 n=14 | origem 7/14 concluída
+2026/11/03 21:42:52 n=14 | origem 8/14 concluída
+2026/11/03 21:42:56 n=14 | origem 9/14 concluída
+2026/11/03 21:43:01 n=14 | origem 10/14 concluída
+2026/11/03 21:43:05 n=14 | origem 11/14 concluída
+2026/11/03 21:43:09 n=14 | origem 12/14 concluída
+2026/11/03 21:43:13 n=14 | origem 13/14 concluída
+2026/11/03 21:43:18 n=14 | origem 14/14 concluída
+2026/11/03 21:43:18 n=14 | avaliações de rotas=174356582400 (teórico em duas passagens=174356582400) | arestas=2440992153600 | custo mínimo=146 | rota=1 -> 2 -> 8 -> 10 -> 3 -> 9 -> 12 -> 13 -> 5 -> 4 -> 11 -> 6 -> 7 -> 14 -> 1 | tempo=59.721629029s
+2026/11/03 21:44:41 n=15 | origem 1/15 concluída
+2026/11/03 21:46:04 n=15 | origem 2/15 concluída
+2026/11/03 21:47:28 n=15 | origem 3/15 concluída
+2026/11/03 21:48:50 n=15 | origem 4/15 concluída
+2026/11/03 21:50:13 n=15 | origem 5/15 concluída
+2026/11/03 21:51:35 n=15 | origem 6/15 concluída
+2026/11/03 21:52:57 n=15 | origem 7/15 concluída
+2026/11/03 21:54:20 n=15 | origem 8/15 concluída
+2026/11/03 21:55:44 n=15 | origem 9/15 concluída
+2026/11/03 21:57:07 n=15 | origem 10/15 concluída
+2026/11/03 21:58:30 n=15 | origem 11/15 concluída
+2026/11/03 21:59:53 n=15 | origem 12/15 concluída
+2026/11/03 22:01:16 n=15 | origem 13/15 concluída
+2026/11/03 22:02:38 n=15 | origem 14/15 concluída
+2026/11/03 22:04:00 n=15 | origem 15/15 concluída
+2026/11/03 22:04:00 n=15 | avaliações de rotas=2615348736000 (teórico em duas passagens=2615348736000) | arestas=39230231040000 | custo mínimo=124 | rota=1 -> 2 -> 8 -> 10 -> 3 -> 9 -> 6 -> 11 -> 4 -> 5 -> 13 -> 12 -> 15 -> 7 -> 14 -> 1 | tempo=20m42.212633324s
+2026/11/03 22:04:00 Benchmark (GPU) concluído. Arquivos: resultados/execucao_sem_fixar_gpu_2920696097.log e resultados/sem_fixar_gpu_20111122.csv
