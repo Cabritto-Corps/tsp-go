@@ -2,3 +2,6 @@
 build/*
 !build/relatorio.pdf
 __pycache__/
+*.py[cod]
+/tsp-gpu
+/tsp_gpu.o

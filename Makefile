@@ -56,17 +56,17 @@ run-random:
 # Exemplo: make grafico RESULTADO=resultados_123.csv
 grafico:
 	@test -n "$(RESULTADO)" || { echo 'Informe o CSV: make grafico RESULTADO="arquivo.csv"'; exit 1; }
-	python3 grafico.py "resultados/$(RESULTADO)"
+	python3 scripts/grafico.py "resultados/$(RESULTADO)"
 
 # Agrega todos os CSVs do dispositivo e plota a mediana de tempo por n.
 # Exemplos: make grafico-mediana DISPOSITIVO=cpu|gpu
 grafico-mediana:
 	@test "$(DISPOSITIVO)" = cpu -o "$(DISPOSITIVO)" = gpu || { echo 'Use DISPOSITIVO=cpu ou DISPOSITIVO=gpu'; exit 1; }
-	python3 grafico_mediana.py "$(DISPOSITIVO)"
+	python3 scripts/grafico_mediana.py "$(DISPOSITIVO)"
 
 # Comparação teórica entre fixar a origem e enumerar todas as permutações.
 grafico-reducao:
-	python3 grafico_reducao.py
+	python3 scripts/grafico_reducao.py
 
 clean:
 	rm -rf $(GPU_BUILD)
